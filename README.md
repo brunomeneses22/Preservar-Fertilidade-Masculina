@@ -4,33 +4,46 @@ Ferramenta web de apoio à decisão (PDA, *patient decision aid*) sobre preserva
 
 > **Rascunho para validação.** O conteúdo ainda não foi revisado pelo comitê nem testado com pacientes. Não usar no atendimento.
 
-## O que faz
+## Como funciona
 
-- **Modo profissional:** triagem de 4 perguntas (puberdade, tratamento planejado, prazo e interesse do paciente). Indica a categoria de risco para a fertilidade e gera um código de encaminhamento com as respostas, um QR code e um texto pronto para o prontuário.
-- **Modo paciente:** guia em 6 passos. Traz as duas opções lado a lado, as probabilidades em pictogramas de 100 homens, um exercício de valores, as perguntas do teste SURE, perguntas para levar à consulta e o contato com o serviço por WhatsApp, enviando só o código.
-- **Modo serviço:** o serviço de andrologia cola o código recebido e lê as respostas da triagem.
+O app é *stateless*: não há servidor nem banco de dados. As respostas viajam dentro do link e do QR code, no fragmento da URL (depois do `#`), que o navegador não envia ao servidor.
 
-## Código de encaminhamento sem banco de dados
+1. **Profissional (aba Profissional):** preenche a triagem de 4 perguntas (puberdade, tratamento planejado, prazo e interesse). O app mostra a categoria de risco e gera um QR code e um link `#pda-OF-XXX-XXX-XXX` com essas respostas codificadas. Também gera um texto para o prontuário.
+2. **Paciente, no próprio celular:** abre o QR ou o link e continua o guia de 6 passos de forma anônima: opções lado a lado, números em pictogramas, exercício de valores, inclinação, teste SURE e perguntas para a consulta. No final, toca em **Gerar meu resumo**. O app cria um novo QR e um link `#ver-OF-XXXX-XXXX-XXXX-XXXX` com a triagem e todas as respostas dele.
+3. **Envio:** o botão **Abrir no WhatsApp** abre uma conversa com o número cadastrado em `CONFIG.whatsapp`, com o link já na mensagem. Enviar é opcional.
+4. **Quem recebe o link** vê todas as respostas numa tela somente leitura. Na aba **Serviço**, também dá para colar o código.
 
-O app é *stateless*: não há servidor nem banco de dados. As respostas da triagem viajam dentro do próprio código, por exemplo `OF-40A-AK2-A3V`, e do link e do QR code (`#pda-OF-40A-AK2-A3V`). Qualquer cópia do app consegue decodificá-lo.
+O paciente pode abrir o guia sem triagem (`#pda`). Nesse caso, o resumo final indica "sem triagem profissional".
 
-São 40 bits em 8 caracteres base32 de Crockford, mais 1 caractere de conferência:
+## Formato dos códigos
 
-| Campo | Bits | Conteúdo |
-| --- | --- | --- |
-| Versão | 3 | Formato do código (atual: 1) |
-| Puberdade | 2 | Sim, não ou não sabe |
-| Tratamentos | 9 | Um bit por opção da triagem |
-| Início | 3 | Até 3 dias, 4 a 7, 8 a 14, mais de 14, já começou, não informado |
-| Interesse | 2 | Quer conversar, indeciso, não agora ou código gerado pelo paciente |
-| Data | 10 | Dia da triagem (ciclo de 1024 dias a partir de 01/01/2026) |
-| Aleatório | 11 | Para que dois casos iguais gerem códigos diferentes |
+Os dois códigos usam base32 de Crockford e terminam em 1 caractere de conferência. Esse caractere é uma soma ponderada módulo 31, que detecta erros de digitação de um caractere e trocas entre vizinhos. Na leitura, são aceitos letras minúsculas, hífens, `O` (lido como 0) e `I`/`L` (lidos como 1).
 
-O caractere de conferência é uma soma ponderada módulo 31. Ele detecta erros de digitação de um caractere e trocas entre vizinhos. Na leitura, letras minúsculas, hífens, `O` (lido como 0) e `I`/`L` (lidos como 1) são aceitos.
+**Código da triagem** (versão 1, 9 caracteres, `OF-XXX-XXX-XXX`), com 40 bits:
 
-**É codificação, não criptografia.** O código não contém nome, documento nem contato, mas quem o tiver consegue ler as respostas da triagem. O app informa isso ao paciente antes do envio. Mudar a ordem das opções de tratamento ou de início exige incrementar `VERSAO_COD`.
+| Campo | Valores |
+| --- | --- |
+| Versão | 1 |
+| Puberdade | Sim, não ou não sabe |
+| Tratamentos | Um bit por opção da triagem (9 opções) |
+| Início | Até 3 dias, 4 a 7, 8 a 14, mais de 14, já começou ou não informado |
+| Interesse | Quer conversar, indeciso, não agora ou sem triagem profissional |
+| Data | Dia da triagem (ciclo de 1024 dias a partir de 01/01/2026) |
+| Aleatório | 11 bits, para que dois casos iguais gerem códigos diferentes |
 
-O app não pede nome, não salva respostas e não envia dados a nenhum servidor. O código só chega ao serviço se o próprio paciente decidir mandar a mensagem.
+**Código completo** (versão 2, 16 caracteres, `OF-XXXX-XXXX-XXXX-XXXX`), com todos os campos da triagem e mais estes, em até 75 bits:
+
+| Campo | Valores |
+| --- | --- |
+| Preenchimento | Dias entre a triagem e o preenchimento (0 a 63) |
+| Valores | 6 itens, de 0 (pouco importante) a 4 (muito importante) |
+| Inclinação | Congelar, não congelar agora, ainda não sei ou sem resposta |
+| SURE | 4 perguntas: sim, não ou sem resposta |
+| Perguntas para a consulta | Um bit por pergunta (6 perguntas) |
+
+**É codificação, não criptografia.** Os códigos não contêm nome, documento nem contato, mas quem tem o link consegue ler as respostas. O app informa isso ao paciente antes do envio. A tela do link é somente leitura, mas nada impede que alguém monte outro código à mão. Garantir que um código não foi forjado exigiria assinatura com chave secreta e, portanto, um servidor. Mudar a ordem ou a quantidade de opções exige uma nova versão de código.
+
+O QR code é gerado no próprio navegador pela biblioteca qrcode-generator 1.4.4 (Kazuhiko Arase, licença MIT), incluída no `index.html`. Não há dependência de CDN para isso.
 
 ## Estrutura
 
@@ -42,14 +55,14 @@ O app não pede nome, não salva respostas e não envia dados a nenhum servidor.
 
 ## Como usar
 
-Abra `index.html` no navegador. Para publicar, qualquer hospedagem estática serve (GitHub Pages, Netlify). Os links e o QR code abrem o guia com o código no fragmento da URL (`#pda-OF-XXX-XXX`), que o navegador não envia ao servidor.
+Abra `index.html` no navegador. Para publicar, qualquer hospedagem estática serve (GitHub Pages, Netlify). As fontes vêm do Google Fonts. Sem internet, o app usa as fontes do sistema e continua funcionando.
 
 ## Antes de publicar
 
-Edite o bloco `CONFIG` no início do script em `index.html`:
+Edite o bloco `CONFIG` no início do script do `index.html`:
 
 - `whatsapp`: número real do serviço (DDI + DDD + número). O valor atual é um exemplo.
-- `appUrl`: endereço público do app.
+- `appUrl`: endereço público do app, usado nos links e nos QR codes.
 - `financiamento`: declaração de quem financia o desenvolvimento e a hospedagem.
 - `rascunho`: mude para `false` só depois da validação.
 
