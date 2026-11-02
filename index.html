@@ -1,5 +1,9 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Decidir Antes</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -138,6 +142,15 @@ tr:last-child th,tr:last-child td{border-bottom:0}
 footer{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;display:grid;gap:4px}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
+<style>
+/* Base que a plataforma de artifacts adicionava automaticamente */
+[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+</style>
+</head>
+<body>
 
 <header class="topbar"><div class="in">
   <a class="brand" href="#inicio"><b>Decidir Antes</b><span>fertilidade masculina e câncer</span></a>
@@ -508,3 +521,5 @@ function ligarPDA(){
 window.addEventListener("hashchange", rota);
 rota();
 </script>
+</body>
+</html>
