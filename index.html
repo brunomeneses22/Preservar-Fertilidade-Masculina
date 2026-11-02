@@ -45,6 +45,13 @@ a{color:var(--accent)}
 .brand{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink)}
 .brand b{font-family:var(--f-display);font-size:1.15rem}
 .brand span{font-size:.8rem;color:var(--muted)}
+@media (max-width:520px){.brand span{display:none}.modes a{padding:6px 8px}}
+.dl{display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:6px 14px;margin:10px 0 0}
+.dl dt{color:var(--muted);font-size:.85rem}
+.dl dd{margin:0;min-width:0}
+@media (max-width:420px){.dl{grid-template-columns:1fr}.dl dd{margin-bottom:6px}}
+details summary{cursor:pointer;color:var(--accent);font-weight:700}
+.cod-in{font:inherit;font-family:var(--f-mono);font-size:1.25rem;letter-spacing:.06em;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%;max-width:22ch;text-transform:uppercase}
 .modes{display:flex;gap:6px}
 .modes a{font-size:.85rem;text-decoration:none;color:var(--muted);padding:6px 10px;border-radius:999px;border:1px solid transparent}
 .modes a[aria-current="page"]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
@@ -157,6 +164,7 @@ img{max-width:100%}
   <nav class="modes" aria-label="Modo">
     <a href="#triagem" data-mode="triagem">Profissional</a>
     <a href="#pda" data-mode="pda">Paciente</a>
+    <a href="#ler" data-mode="ler">Serviço</a>
   </nav>
 </div></header>
 
@@ -195,21 +203,98 @@ const URG = [
   {id:"1", t:"Em até 3 dias"}, {id:"2", t:"Em 4 a 7 dias"}, {id:"3", t:"Em 8 a 14 dias"},
   {id:"4", t:"Em mais de 14 dias"}, {id:"0", t:"Já começou"}
 ];
-const URG_MSG = {"1":"Meu tratamento começa em até 3 dias.","2":"Meu tratamento começa em até 7 dias.","3":"Meu tratamento começa em até 14 dias.","4":"Meu tratamento começa em mais de 14 dias.","0":"Meu tratamento já começou."};
 
 /* ===================== Utilidades ===================== */
 const $ = (s, el=document) => el.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function novoCodigo(){
-  const A = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-  const b = new Uint32Array(6); crypto.getRandomValues(b);
-  const c = Array.from(b, n => A[n % A.length]).join("");
-  return `OF-${c.slice(0,3)}-${c.slice(3)}`;
+/* ===================== Código de encaminhamento (stateless) =====================
+   O código carrega as respostas da triagem; nada é guardado em servidor.
+   40 bits de dados em 8 caracteres Crockford base32 + 1 caractere de conferência:
+   versão (3 bits) · puberdade (2) · tratamentos (9, um por opção) · início (3)
+   · interesse (2) · dia da triagem (10, dias desde 01/01/2026, ciclo de 1024 dias)
+   · parte aleatória (11, para que casos iguais gerem códigos diferentes).
+   É uma codificação, não uma criptografia: quem tiver o código consegue ler as respostas,
+   que não identificam o paciente. Mudar a ordem de TRAT, URG ou dos campos exige nova VERSAO_COD. */
+const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+const VERSAO_COD = 1;
+const COD_PUB = ["s","n","x"];
+const COD_URG = ["1","2","3","4","0","?"];          // "?" = não informado (código gerado pelo paciente)
+const COD_INT = ["s","i","n","p"];                  // "p" = gerado pelo próprio paciente, sem triagem
+const COD_BASES = [8, 4, 512, 8, 4, 1024, 2048];    // produto = 2^40
+const DIA0 = Date.UTC(2026, 0, 1);
+const RE_COD = /^OF-[0-9A-Z]{3}-[0-9A-Z]{3}-[0-9A-Z]{3}$/;
+function diaHoje(){ const n = new Date(); return Math.floor((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - DIA0) / 864e5); }
+/* Soma ponderada módulo 31 (primo): pega erros de um caractere e trocas de vizinhos (exceto 0↔Z) */
+function conferencia(vals){ return vals.reduce((s, v, i) => s + v * (i + 1), 0) % 31; }
+function codificar(d){
+  const mask = TRAT.reduce((m, o, i) => m + (d.trat.includes(o.id) ? 2 ** i : 0), 0);
+  const aleat = crypto.getRandomValues(new Uint32Array(1))[0] % 2048;
+  const campos = [VERSAO_COD, COD_PUB.indexOf(d.pub), mask, COD_URG.indexOf(d.urg), COD_INT.indexOf(d.int), ((diaHoje() % 1024) + 1024) % 1024, aleat];
+  if (campos.some(v => v < 0)) throw new Error("Resposta fora do esperado ao gerar o código.");
+  let n = 0; campos.forEach((v, i) => { n = n * COD_BASES[i] + v; });   // até 2^40, seguro em Number
+  const vals = []; for (let i = 0; i < 8; i++){ vals.unshift(n % 32); n = Math.floor(n / 32); }
+  vals.push(conferencia(vals));
+  const c = vals.map(v => B32[v]).join("");
+  return `OF-${c.slice(0,3)}-${c.slice(3,6)}-${c.slice(6)}`;
 }
+function decodificar(bruto){
+  let s = String(bruto || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
+  if (s.startsWith("OF")) s = s.slice(2);
+  s = s.replace(/O/g, "0").replace(/[IL]/g, "1");
+  if (s.length !== 9) return {erro: "O código tem 9 caracteres depois de OF, por exemplo OF-1A2-B3C-D4E."};
+  const vals = [...s].map(ch => B32.indexOf(ch));
+  if (vals.some(v => v < 0)) return {erro: "O código tem um caractere que não existe neste formato. Confira se foi copiado sem erros."};
+  if (conferencia(vals.slice(0, 8)) !== vals[8]) return {erro: "O código não confere. Provavelmente um caractere foi digitado errado."};
+  let n = 0; for (let i = 0; i < 8; i++) n = n * 32 + vals[i];
+  const out = []; for (let i = COD_BASES.length - 1; i >= 0; i--){ out.unshift(n % COD_BASES[i]); n = Math.floor(n / COD_BASES[i]); }
+  const [ver, pub, mask, urg, int, dia] = out;
+  if (ver !== VERSAO_COD) return {erro: "Este código foi gerado por outra versão do app."};
+  if (!COD_PUB[pub] || !COD_URG[urg]) return {erro: "O código não confere. Provavelmente um caractere foi digitado errado."};
+  const hoje = diaHoje(), k = hoje - (((hoje - dia) % 1024) + 1024) % 1024;
+  const c = vals.map(v => B32[v]).join("");
+  return {
+    codigo: `OF-${c.slice(0,3)}-${c.slice(3,6)}-${c.slice(6)}`,
+    pub: COD_PUB[pub], trat: TRAT.filter((o, i) => mask & (1 << i)).map(o => o.id),
+    urg: COD_URG[urg], int: COD_INT[int], data: new Date(DIA0 + k * 864e5)
+  };
+}
+function nivelRisco(trat){
+  const sel = TRAT.filter(o => trat.includes(o.id));
+  const max = sel.length ? Math.max(...sel.map(o => o.nivel)) : -1;
+  return max >= 3 ? ["alto","Risco alto"] : max === 2 ? ["inter","Risco intermediário"] : max === 1 ? ["baixo","Risco baixo a intermediário"] : ["incerto","Risco incerto"];
+}
+const dataFmt = (dt, dias = 0) => { const x = new Date(dt.getTime() + dias * 864e5); return `${String(x.getUTCDate()).padStart(2,"0")}/${String(x.getUTCMonth()+1).padStart(2,"0")}/${x.getUTCFullYear()}`; };
+const URG_DIAS = {"1":3, "2":7, "3":14};
+const TXT_PUB = {s:"Sim, pós-púbere", n:"Não (pré-púbere)", x:"Não sabe"};
+const TXT_INT = {s:"Quer conversar sobre fertilidade", i:"Está indeciso", n:"Não quer conversar neste momento", p:"Código gerado pelo próprio paciente, sem triagem"};
+/* Lista legível do que o código informa; usada na tela do serviço e na do paciente */
+function resumoCodigo(r){
+  if (r.int === "p") return [["Origem", "Gerado pelo próprio paciente no guia, sem triagem profissional"], ["Data", dataFmt(r.data)]];
+  const u = URG.find(o => o.id === r.urg);
+  const prazo = URG_DIAS[r.urg] ? ` (até ${dataFmt(r.data, URG_DIAS[r.urg])})` : "";
+  return [
+    ["Data da triagem", dataFmt(r.data)],
+    ["Pós-púbere", TXT_PUB[r.pub]],
+    ["Tratamento planejado", TRAT.filter(o => r.trat.includes(o.id)).map(o => o.t).join("; ")],
+    ["Início do tratamento", (u ? u.t : "Não informado") + prazo],
+    ["Interesse", TXT_INT[r.int]],
+    ["Classificação", nivelRisco(r.trat)[1]]
+  ];
+}
+const tabelaResumo = linhas => `<dl class="dl">${linhas.map(([k,v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
+
 function baseUrl(){ return CONFIG.appUrl || (location.origin + location.pathname); }
-function linkPaciente(code, u){ return `${baseUrl()}#pda-${code}${u ? "-u"+u : ""}`; }
-function linkWhats(code, u){
-  const msg = `Olá! A equipe que cuida do meu tratamento me orientou a procurar avaliação de preservação da fertilidade. Meu código é ${code}.${u && URG_MSG[u] ? " " + URG_MSG[u] : ""}`;
+function linkPaciente(code){ return `${baseUrl()}#pda-${code}`; }
+function linkServico(code){ return `${baseUrl()}#ler-${code}`; }
+function linkWhats(code){
+  const r = decodificar(code);
+  let prazo = "";
+  if (!r.erro){
+    if (URG_DIAS[r.urg]) prazo = ` Meu tratamento está previsto para começar até ${dataFmt(r.data, URG_DIAS[r.urg])}.`;
+    else if (r.urg === "4") prazo = ` Meu tratamento está previsto para começar depois de ${dataFmt(r.data, 14)}.`;
+    else if (r.urg === "0") prazo = " Meu tratamento já começou.";
+  }
+  const msg = `Olá! A equipe que cuida do meu tratamento me orientou a procurar avaliação de preservação da fertilidade. Meu código é ${code}.${prazo}`;
   return {url:`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, msg};
 }
 function numeroFmt(n){ const m = n.match(/^55(\d{2})(\d{4,5})(\d{4})$/); return m ? `+55 (${m[1]}) ${m[2]}-${m[3]}` : "+" + n; }
@@ -287,9 +372,7 @@ function telaTriagem(){
 }
 
 function resultadoTriagem(d){
-  const sel = TRAT.filter(o => d.trat.includes(o.id));
-  const max = Math.max(...sel.map(o => o.nivel));
-  const nivel = max >= 3 ? ["alto","Risco alto"] : max === 2 ? ["inter","Risco intermediário"] : max === 1 ? ["baixo","Risco baixo a intermediário"] : ["incerto","Risco incerto"];
+  const nivel = nivelRisco(d.trat);
   const notas = [];
   notas.push("A diretriz ASCO 2025 recomenda conversar sobre fertilidade no diagnóstico e encaminhar quem tiver interesse ou estiver indeciso, qualquer que seja o risco.");
   if (d.urg === "1" || d.urg === "2") notas.push("Prazo curto: oriente o contato com o serviço hoje. Uma coleta pode ser feita em poucos dias.");
@@ -300,8 +383,8 @@ function resultadoTriagem(d){
   if (d.pub === "x") notas.push("Puberdade incerta: o serviço pode avaliar se a coleta de sêmen é possível.");
   if (d.int === "n") notas.push("O paciente pode mudar de ideia. Entregue o código mesmo assim; ele decide se usa.");
 
-  const code = novoCodigo();
-  const lp = linkPaciente(code, d.urg);
+  const code = codificar(d);
+  const lp = linkPaciente(code);
   const prontuario = `Paciente orientado sobre risco de infertilidade relacionado ao tratamento oncológico (${nivel[1].toLowerCase()}) e sobre opções de preservação da fertilidade, com apoio do guia Decidir Antes v${CONFIG.versao}. Código de encaminhamento entregue: ${code}.`;
   return `<section class="panel" aria-labelledby="res-h">
     <div class="risk"><h2 id="res-h">Resultado</h2><span class="pill ${nivel[0]}">${nivel[1]}</span></div>
@@ -311,11 +394,12 @@ function resultadoTriagem(d){
       <div class="stack">
         <span class="strawmeta">CÓDIGO DE ENCAMINHAMENTO · SEM IDENTIFICAÇÃO</span>
         <span class="code" id="code">${code}</span>
-        <p class="small">O paciente fotografa o QR ou recebe o link. Ele lê o guia e, se quiser, envia o código pelo WhatsApp do serviço.</p>
+        <p class="small">O código e o QR levam as respostas desta triagem, sem nome nem contato. O paciente lê o guia e, se quiser, envia o código pelo WhatsApp; o serviço lê as respostas no próprio código.</p>
       </div>
     </div>
+    <details class="small"><summary>O que este código informa ao serviço</summary>${tabelaResumo(resumoCodigo(decodificar(code)))}</details>
     <div class="btns">
-      <a class="btn" href="#pda-${code}${d.urg ? "-u"+d.urg : ""}">Mostrar o guia ao paciente agora</a>
+      <a class="btn" href="#pda-${code}">Mostrar o guia ao paciente agora</a>
       <button class="btn ghost" type="button" id="cp-link">Copiar link para enviar</button>
     </div>
     <div class="copybox" id="link-box">${esc(lp)}</div>
@@ -330,8 +414,10 @@ function resultadoTriagem(d){
   </section>`;
 }
 
-function telaPDA(code, u){
-  const w = code ? linkWhats(code, u) : null;
+function telaPDA(code){
+  const r = code ? decodificar(code) : null;
+  if (r && r.erro) code = null;          // link com código inválido: abre o guia sem código
+  const w = code ? linkWhats(code) : null;
   const sec = (id, n, titulo, corpo) => `<section class="step" id="${id}"><span class="stepno">PASSO ${n} DE 6</span><h2>${titulo}</h2>${corpo}</section>`;
   return `${draftBanner()}
   <div class="stack">
@@ -424,12 +510,13 @@ function telaPDA(code, u){
     <div class="panel" id="enc">
       <h3>Se quiser conversar com o serviço de andrologia</h3>
       ${code ? `
-        <p>Envie a mensagem abaixo pelo WhatsApp. Ela leva apenas o seu código, sem seu nome. Você só é identificado se escolher se apresentar na conversa.</p>
+        <p>Envie a mensagem abaixo pelo WhatsApp. Ela leva o seu código, sem seu nome. Você só é identificado se escolher se apresentar na conversa.</p>
+        <div class="callout small"><b>O que o código informa ao serviço</b>${tabelaResumo(resumoCodigo(r))}<p class="muted">Nenhum nome, documento ou contato está no código.</p></div>
         <div class="copybox" id="msg-box">${esc(w.msg)}</div>
         <div class="btns"><a class="btn" href="${w.url}" target="_blank" rel="noopener">Abrir no WhatsApp</a><button class="btn ghost" type="button" id="cp-msg">Copiar mensagem</button></div>
         <p class="small">Número do serviço: <span class="copybox" style="display:inline-block;padding:2px 8px">${numeroFmt(CONFIG.whatsapp)}</span></p>
         <p class="toast" id="t-msg"></p>` : `
-        <p>Para entrar em contato sem se identificar, gere um código. Ele é aleatório e não contém nenhum dado seu.</p>
+        <p>Para entrar em contato sem se identificar, gere um código. Ele informa apenas a data de hoje e que foi gerado por você, sem nenhum dado pessoal.</p>
         <div class="btns"><button class="btn" type="button" id="gen-code">Gerar meu código</button></div>`}
       <p class="small muted">${esc(CONFIG.servico)} · ${esc(CONFIG.cidade)}. Você pode procurar outro serviço de sua escolha; o código serve só para facilitar o primeiro contato.</p>
     </div>`)}
@@ -442,7 +529,7 @@ function telaPDA(code, u){
       <p><b>Como foi feito:</b> com pacientes e profissionais envolvidos no desenho e nos testes, seguindo os padrões internacionais IPDAS 5.0.</p>
       <p><b>Financiamento:</b> <span class="todo">${esc(CONFIG.financiamento)}</span></p>
       <p><b>Conflito de interesse:</b> o serviço para onde o guia encaminha pertence ao autor do conteúdo. Por isso as duas opções foram revisadas para ter o mesmo destaque, e você é livre para procurar outro serviço.</p>
-      <p><b>Privacidade:</b> o app não pede nome, não salva respostas e não envia nada. O código é aleatório. Só você decide se manda a mensagem.</p>
+      <p><b>Privacidade:</b> o app não pede nome, não salva respostas em lugar nenhum e não envia nada sozinho. O código leva, de forma codificada, as respostas da triagem (puberdade, tipo de tratamento, prazo e interesse) e a data, mas nenhum nome, documento ou contato. Qualquer pessoa com o código consegue ler essas respostas. Só você decide se manda a mensagem.</p>
       <p><b>Versão:</b> ${esc(CONFIG.versao)}, ${esc(CONFIG.data)}. <b>Atualização:</b> ${esc(CONFIG.revisao)}</p>
       <p>Este guia informa e não substitui a conversa com a sua equipe de saúde.</p>
     </div>
@@ -459,14 +546,41 @@ function telaPDA(code, u){
   </section>`;
 }
 
+function telaLer(code){
+  return `${draftBanner()}
+  <div class="stack">
+    <p class="eyebrow">Serviço de andrologia</p>
+    <h1>Ler código de encaminhamento</h1>
+    <p class="lead">Cole o código recebido pelo WhatsApp. As respostas da triagem estão no próprio código; nada é consultado em servidor.</p>
+  </div>
+  <form class="panel" id="f-ler" novalidate>
+    <label for="cod-in"><b>Código</b></label>
+    <input id="cod-in" class="cod-in" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="OF-XXX-XXX-XXX" value="${esc(code || "")}">
+    <div class="btns"><button class="btn" type="submit">Ler código</button></div>
+    <p class="err" id="ler-err" hidden></p>
+  </form>
+  <div id="ler-res"></div>`;
+}
+function resultadoLer(r){
+  const nivel = r.int === "p" ? null : nivelRisco(r.trat);
+  return `<section class="panel" aria-labelledby="ler-h">
+    <div class="risk"><h2 id="ler-h"><span class="code" style="font-size:1.2rem">${esc(r.codigo)}</span></h2>${nivel ? `<span class="pill ${nivel[0]}">${nivel[1]}</span>` : ""}</div>
+    ${tabelaResumo(resumoCodigo(r))}
+    ${r.urg === "1" || r.urg === "2" ? `<p class="err">Prazo curto: priorize o agendamento da coleta.</p>` : ""}
+    <p class="small muted">O código não contém nome nem contato. A identificação acontece só se o paciente se apresentar na conversa.</p>
+  </section>`;
+}
+
 /* ===================== Roteamento e eventos ===================== */
 const app = $("#app");
 function rota(){
   const h = location.hash.replace(/^#/, "");
-  const m = h.match(/^pda-(OF-[A-Z0-9]{3}-[A-Z0-9]{3})(?:-u([0-4]))?$/);
+  const m = h.match(/^pda-(OF-[0-9A-Z]{3}-[0-9A-Z]{3}-[0-9A-Z]{3})$/);
+  const l = h.match(/^ler(?:-(OF-[0-9A-Z]{3}-[0-9A-Z]{3}-[0-9A-Z]{3}))?$/);
   let modo = "inicio";
   if (h === "triagem"){ app.innerHTML = telaTriagem(); ligarTriagem(); modo = "triagem"; }
-  else if (h === "pda" || m){ app.innerHTML = telaPDA(m ? m[1] : null, m ? m[2] : null); ligarPDA(); modo = "pda"; }
+  else if (h === "pda" || m){ app.innerHTML = telaPDA(m ? m[1] : null); ligarPDA(); modo = "pda"; }
+  else if (l){ app.innerHTML = telaLer(l[1]); ligarLer(!!l[1]); modo = "ler"; }
   else { app.innerHTML = telaInicio(); }
   document.querySelectorAll(".modes a").forEach(a => { if (a.dataset.mode === modo) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0,0);
@@ -486,7 +600,7 @@ function ligarTriagem(){
     const box = $("#tri-res");
     box.innerHTML = resultadoTriagem(d);
     const code = $("#code").textContent;
-    qr($("#qr"), linkPaciente(code, d.urg));
+    qr($("#qr"), linkPaciente(code));
     $("#cp-link").addEventListener("click", () => copiar($("#link-box").textContent, $("#t-link"), $("#link-box")));
     $("#cp-pront").addEventListener("click", () => copiar($("#pront-box").textContent, $("#t-pront"), $("#pront-box")));
     $("#nova").addEventListener("click", e2 => { e2.preventDefault(); rota(); });
@@ -515,7 +629,21 @@ function ligarPDA(){
   const cp = $("#cp-msg");
   if (cp) cp.addEventListener("click", () => copiar($("#msg-box").textContent, $("#t-msg"), $("#msg-box")));
   const gen = $("#gen-code");
-  if (gen) gen.addEventListener("click", () => { location.hash = "pda-" + novoCodigo(); setTimeout(() => $("#enc").scrollIntoView(), 50); });
+  if (gen) gen.addEventListener("click", () => {
+    location.hash = "pda-" + codificar({pub:"x", trat:[], urg:"?", int:"p"});
+    setTimeout(() => $("#enc").scrollIntoView(), 50);
+  });
+}
+
+function ligarLer(auto){
+  const f = $("#f-ler"), err = $("#ler-err"), res = $("#ler-res");
+  const ler = () => {
+    const r = decodificar($("#cod-in").value);
+    if (r.erro){ err.textContent = r.erro; err.hidden = false; res.innerHTML = ""; return; }
+    err.hidden = true; $("#cod-in").value = r.codigo; res.innerHTML = resultadoLer(r);
+  };
+  f.addEventListener("submit", e => { e.preventDefault(); ler(); });
+  if (auto) ler();
 }
 
 window.addEventListener("hashchange", rota);
