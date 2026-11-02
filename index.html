@@ -2487,177 +2487,253 @@ const CONFIG = {
 };
 const WHATSAPP_EXEMPLO = CONFIG.whatsapp === "5585900000000";
 
-/* ===================== Dados da triagem ===================== */
-const TRAT = [
-  {id:"alq", nivel:3, t:"Quimioterapia com agente alquilante", s:"ciclofosfamida, ifosfamida, procarbazina, bussulfano, melfalano, clorambucil"},
-  {id:"tmo", nivel:3, t:"Transplante de medula óssea", s:"condicionamento em alta dose"},
-  {id:"rt",  nivel:3, t:"Radioterapia com testículos no campo ou próximos", s:"pélvica, testicular ou corporal total"},
-  {id:"plat",nivel:2, t:"Quimioterapia com platina", s:"cisplatina, carboplatina"},
-  {id:"outq",nivel:1, t:"Outra quimioterapia", s:"ex.: antraciclinas, vincristina, metotrexato, bleomicina"},
-  {id:"cir", nivel:2, t:"Cirurgia pélvica ou retroperitoneal", s:"risco para a ejaculação"},
-  {id:"orq", nivel:2, t:"Orquiectomia", s:"retirada de testículo"},
-  {id:"alvo",nivel:0, t:"Imunoterapia, terapia-alvo ou hormonioterapia", s:"efeito na fertilidade pouco conhecido"},
-  {id:"nd",  nivel:0, t:"Tratamento ainda não definido", s:""}
-];
-const URG = [
-  {id:"1", t:"Em até 3 dias"}, {id:"2", t:"Em 4 a 7 dias"}, {id:"3", t:"Em 8 a 14 dias"},
-  {id:"4", t:"Em mais de 14 dias"}, {id:"0", t:"Já começou"}
-];
+/* ===================== Questionários versionados =====================
+   REGRA PERMANENTE (ver CLAUDE.md): toda versão publicada do questionário fica aqui para sempre.
+   Nunca altere, reordene ou remova perguntas/opções de uma versão existente: os códigos já
+   entregues a pacientes dependem dela para serem lidos. Para mudar qualquer pergunta ou opção,
+   copie a versão atual inteira para uma nova chave (N + 1), edite a cópia e aponte Q_ATUAL para ela.
+   Os ids ("s", "alq", "1"...) e a ORDEM das listas definem a codificação. */
+const QUESTIONARIOS = {
+  1: {
+    data: "02/11/2026",
+    pub: [
+      {id:"s", t:"Sim, pós-púbere"},
+      {id:"n", t:"Não (pré-púbere)"},
+      {id:"x", t:"Não sabe"}
+    ],
+    trat: [
+      {id:"alq", nivel:3, t:"Quimioterapia com agente alquilante", s:"ciclofosfamida, ifosfamida, procarbazina, bussulfano, melfalano, clorambucil"},
+      {id:"tmo", nivel:3, t:"Transplante de medula óssea", s:"condicionamento em alta dose"},
+      {id:"rt",  nivel:3, t:"Radioterapia com testículos no campo ou próximos", s:"pélvica, testicular ou corporal total"},
+      {id:"plat",nivel:2, t:"Quimioterapia com platina", s:"cisplatina, carboplatina"},
+      {id:"outq",nivel:1, t:"Outra quimioterapia", s:"ex.: antraciclinas, vincristina, metotrexato, bleomicina"},
+      {id:"cir", nivel:2, t:"Cirurgia pélvica ou retroperitoneal", s:"risco para a ejaculação"},
+      {id:"orq", nivel:2, t:"Orquiectomia", s:"retirada de testículo"},
+      {id:"alvo",nivel:0, t:"Imunoterapia, terapia-alvo ou hormonioterapia", s:"efeito na fertilidade pouco conhecido"},
+      {id:"nd",  nivel:0, t:"Tratamento ainda não definido", s:""}
+    ],
+    urg: [
+      {id:"1", t:"Em até 3 dias", dias:3},
+      {id:"2", t:"Em 4 a 7 dias", dias:7},
+      {id:"3", t:"Em 8 a 14 dias", dias:14},
+      {id:"4", t:"Em mais de 14 dias", depois:14},
+      {id:"0", t:"Já começou"},
+      {id:"?", t:"Não informado", oculto:true}          // sem triagem profissional
+    ],
+    int: [
+      {id:"s", t:"Quer conversar sobre fertilidade"},
+      {id:"i", t:"Está indeciso"},
+      {id:"n", t:"Não quer conversar neste momento"},
+      {id:"p", t:"Sem triagem profissional", oculto:true}  // guia aberto direto pelo paciente
+    ],
+    valores: [
+      "Ter filhos biológicos no futuro",
+      "Ter uma reserva guardada, mesmo que talvez eu nunca use",
+      "Não ter uma tarefa a mais antes de começar o tratamento",
+      "Evitar custos agora",
+      "Evitar o desconforto ou o constrangimento da coleta",
+      "Sentir que fiz tudo o que estava ao meu alcance"
+    ],
+    niveis: ["Pouco importante", "Um pouco importante", "Importância média", "Importante", "Muito importante"],
+    lean: [
+      {id:"",  t:"Não respondeu"},
+      {id:"c", t:"Congelar"},
+      {id:"n", t:"Não congelar agora"},
+      {id:"x", t:"Ainda não sabe"}
+    ],
+    sure: [
+      "Você se sente seguro sobre qual é a melhor escolha para você?",
+      "Você conhece os benefícios e os riscos de cada opção?",
+      "Você sabe quais benefícios e riscos importam mais para você?",
+      "Você tem apoio e orientação suficientes para escolher?"
+    ],
+    yn: [
+      {id:"",  t:"Sem resposta"},
+      {id:"s", t:"Sim"},
+      {id:"n", t:"Não"}
+    ],
+    perguntas: [
+      "Qual é o risco do meu tratamento para a minha fertilidade?",
+      "Há tempo para coletar antes de começar? Quantas amostras?",
+      "Quanto custa a coleta e quanto custa por ano manter a amostra?",
+      "Se eu não congelar agora, quando devo fazer um espermograma depois?",
+      "Posso ter filhos de forma natural depois do tratamento? Quanto tempo devo esperar?",
+      "O que acontece com a amostra se eu mudar de ideia?"
+    ]
+  }
+};
+const Q_ATUAL = 1;                       // versão usada para GERAR códigos novos
+const Q = QUESTIONARIOS[Q_ATUAL];
+/* Atalhos da versão atual, usados pelas telas de preenchimento */
+const TRAT = Q.trat, URG = Q.urg.filter(o => !o.oculto), VALORES = Q.valores, SURE_Q = Q.sure, PERGUNTAS = Q.perguntas;
 
 /* ===================== Utilidades ===================== */
 const $ = (s, el=document) => el.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
 /* ===================== Códigos de encaminhamento (stateless) =====================
    Nada é guardado em servidor: as respostas viajam dentro do próprio código, no link e no QR.
-   Dois formatos, ambos em base32 de Crockford + 1 caractere de conferência (soma ponderada mod 31):
-   · Código da triagem (versão 1, 9 caracteres, OF-XXX-XXX-XXX): o profissional gera e passa ao paciente.
-     versão · puberdade · tratamentos (1 bit por opção) · início · interesse · dia da triagem
-     (ciclo de 1024 dias desde 01/01/2026) · parte aleatória.
-   · Código completo (versão 2, 16 caracteres, OF-XXXX-XXXX-XXXX-XXXX): o paciente gera ao final do guia.
-     Tudo da triagem + dias entre triagem e preenchimento · 6 valores (0 a 4) · inclinação
-     · 4 respostas do SURE · perguntas marcadas para a consulta.
-   É codificação, não criptografia: quem tem o link lê as respostas, que não identificam o paciente.
-   Mudar a ordem ou a quantidade de opções exige nova versão. */
+   Base32 de Crockford + 1 caractere de conferência (soma ponderada mod 31).
+   · Código da triagem: 9 caracteres (OF-XXX-XXX-XXX). Gerado pelo profissional.
+   · Código completo: 16 caracteres (OF-XXXX-XXXX-XXXX-XXXX). Gerado pelo paciente no fim do guia.
+   ESTRUTURA FIXA (nunca mudar): o número codificado termina na VERSÃO DO QUESTIONÁRIO, nos 6 bits
+   menos significativos (base 64). O decodificador lê a versão primeiro e só então usa as listas
+   daquela versão para ler o resto. Os demais campos, do mais para o menos significativo:
+     triagem: puberdade · tratamentos (1 bit por opção) · início · interesse · dia da triagem
+              (ciclo de 1024 dias desde 01/01/2026) · aleatório (256)
+     completo: os da triagem + dias até o preenchimento (0 a 63) · um nível por valor · inclinação
+              · uma resposta por pergunta SURE · perguntas marcadas (1 bit por pergunta)
+   É codificação, não criptografia: quem tem o link lê as respostas, que não identificam o paciente. */
 const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
-const COD_PUB = ["s","n","x"];
-const COD_URG = ["1","2","3","4","0","?"];          // "?" = não informado (sem triagem)
-const COD_INT = ["s","i","n","p"];                  // "p" = sem triagem profissional
-const COD_LEAN = ["","c","n","x"];                  // "" = não respondeu
-const COD_YN = ["","s","n"];
-const BASES_TRI = [8, 4, 512, 8, 4, 1024, 2048];                 // = 2^40
-const BASES_PAC = [64, 5, 5, 5, 5, 5, 5, 4, 3, 3, 3, 3, 64];     // < 2^35
-const FORMATOS = {9: {ver: 1, bases: BASES_TRI, grupo: 3}, 16: {ver: 2, bases: BASES_TRI.concat(BASES_PAC), grupo: 4}};
+const BASE_VERSAO = 64;
+const TAM_TRIAGEM = 9, TAM_COMPLETO = 16;
 const DIA0 = Date.UTC(2026, 0, 1);
-const VALORES = [
-  "Ter filhos biológicos no futuro",
-  "Ter uma reserva guardada, mesmo que talvez eu nunca use",
-  "Não ter uma tarefa a mais antes de começar o tratamento",
-  "Evitar custos agora",
-  "Evitar o desconforto ou o constrangimento da coleta",
-  "Sentir que fiz tudo o que estava ao meu alcance"
-];
-const NIVEL_VAL = ["Pouco importante", "Um pouco importante", "Importância média", "Importante", "Muito importante"];
-const SURE_Q = [
-  "Você se sente seguro sobre qual é a melhor escolha para você?",
-  "Você conhece os benefícios e os riscos de cada opção?",
-  "Você sabe quais benefícios e riscos importam mais para você?",
-  "Você tem apoio e orientação suficientes para escolher?"
-];
-const PERGUNTAS = [
-  "Qual é o risco do meu tratamento para a minha fertilidade?",
-  "Há tempo para coletar antes de começar? Quantas amostras?",
-  "Quanto custa a coleta e quanto custa por ano manter a amostra?",
-  "Se eu não congelar agora, quando devo fazer um espermograma depois?",
-  "Posso ter filhos de forma natural depois do tratamento? Quanto tempo devo esperar?",
-  "O que acontece com a amostra se eu mudar de ideia?"
-];
-const TXT_LEAN = {c: "Congelar", n: "Não congelar agora", x: "Ainda não sabe", "": "Não respondeu"};
+const basesTriagem = q => [q.pub.length, 2 ** q.trat.length, q.urg.length, q.int.length, 1024, 256];
+const basesPaciente = q => [64, ...q.valores.map(() => q.niveis.length), q.lean.length, ...q.sure.map(() => q.yn.length), 2 ** q.perguntas.length];
+const produto = bs => bs.reduce((p, b) => p * BigInt(b), 1n);
+/* Confere, ao carregar, se toda versão cabe nos tamanhos fixos do código */
+for (const [v, q] of Object.entries(QUESTIONARIOS)){
+  if (+v < 1 || +v >= BASE_VERSAO) throw new Error(`Versão de questionário ${v} fora do intervalo 1 a ${BASE_VERSAO - 1}.`);
+  if (produto(basesTriagem(q)) * BigInt(BASE_VERSAO) > 32n ** BigInt(TAM_TRIAGEM - 1)) throw new Error(`Questionário v${v}: a triagem não cabe em ${TAM_TRIAGEM} caracteres.`);
+  if (produto([...basesTriagem(q), ...basesPaciente(q)]) * BigInt(BASE_VERSAO) > 32n ** BigInt(TAM_COMPLETO - 1)) throw new Error(`Questionário v${v}: o código completo não cabe em ${TAM_COMPLETO} caracteres.`);
+}
 
 function diaHoje(){ const n = new Date(); return Math.floor((Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - DIA0) / 864e5); }
 function conferencia(vals){ return vals.reduce((s, v, i) => s + v * (i + 1), 0) % 31; }
-function empacotar(campos, tam){
-  const f = FORMATOS[tam];
+const formatar = (vals, tam) => { const c = vals.map(v => B32[v]).join(""); return "OF-" + c.match(new RegExp(`.{1,${tam === TAM_TRIAGEM ? 3 : 4}}`, "g")).join("-"); };
+const idx = (lista, id) => lista.findIndex(o => o.id === id);
+function empacotar(campos, bases, versao, tam){
   let x = 0n;
   campos.forEach((v, i) => {
-    if (!(Number.isInteger(v) && v >= 0 && v < f.bases[i])) throw new Error("Resposta fora do esperado ao gerar o código.");
-    x = x * BigInt(f.bases[i]) + BigInt(v);
+    if (!(Number.isInteger(v) && v >= 0 && v < bases[i])) throw new Error("Resposta fora do esperado ao gerar o código.");
+    x = x * BigInt(bases[i]) + BigInt(v);
   });
+  x = x * BigInt(BASE_VERSAO) + BigInt(versao);          // versão sempre nos bits menos significativos
   const vals = []; for (let i = 0; i < tam - 1; i++){ vals.unshift(Number(x % 32n)); x /= 32n; }
+  if (x !== 0n) throw new Error("O código não coube no tamanho previsto.");
   vals.push(conferencia(vals));
-  const c = vals.map(v => B32[v]).join("");
-  return "OF-" + c.match(new RegExp(`.{1,${f.grupo}}`, "g")).join("-");
+  return formatar(vals, tam);
+}
+function camposTriagem(q, d, dia, aleat){
+  return [idx(q.pub, d.pub), q.trat.reduce((m, o, i) => m + (d.trat.includes(o.id) ? 2 ** i : 0), 0), idx(q.urg, d.urg), idx(q.int, d.int), dia, aleat];
 }
 function codificarTriagem(d){
-  const mask = TRAT.reduce((m, o, i) => m + (d.trat.includes(o.id) ? 2 ** i : 0), 0);
-  const aleat = crypto.getRandomValues(new Uint32Array(1))[0] % 2048;
-  return empacotar([1, COD_PUB.indexOf(d.pub), mask, COD_URG.indexOf(d.urg), COD_INT.indexOf(d.int), ((diaHoje() % 1024) + 1024) % 1024, aleat], 9);
+  const aleat = crypto.getRandomValues(new Uint32Array(1))[0] % 256;
+  return empacotar(camposTriagem(Q, d, ((diaHoje() % 1024) + 1024) % 1024, aleat), basesTriagem(Q), Q_ATUAL, TAM_TRIAGEM);
 }
-/* tri = resultado de decodificar() de um código de triagem; pac = respostas do paciente */
+/* tri = decodificar() de um código de triagem; pac = respostas do paciente.
+   O código completo usa a MESMA versão do código de triagem recebido. Se a triagem foi feita numa
+   versão antiga, o paciente responde com as perguntas da versão atual; nesse caso a triagem é
+   recodificada na versão atual, desde que todas as respostas dela existam nessa versão. */
 function codificarCompleto(tri, pac){
+  const q = Q, v = Q_ATUAL;
   const dpac = Math.min(63, Math.max(0, diaHoje() - Math.round((tri.data.getTime() - DIA0) / 864e5)));
-  const perg = pac.perg.reduce((m, v, i) => m + (v ? 2 ** i : 0), 0);
-  return empacotar([2, ...tri.bruto.slice(1, 7), dpac, ...pac.vals, COD_LEAN.indexOf(pac.lean), ...pac.sure.map(v => COD_YN.indexOf(v)), perg], 16);
+  const t = camposTriagem(q, tri, tri.bruto.dia, tri.bruto.aleat);
+  if (t.some(x => x < 0)) throw new Error("A triagem recebida usa opções que não existem na versão atual do questionário.");
+  const perg = pac.perg.reduce((m, x, i) => m + (x ? 2 ** i : 0), 0);
+  const campos = [...t, dpac, ...pac.vals, idx(q.lean, pac.lean), ...pac.sure.map(x => idx(q.yn, x)), perg];
+  return empacotar(campos, [...basesTriagem(q), ...basesPaciente(q)], v, TAM_COMPLETO);
 }
 function decodificar(bruto){
   let s = String(bruto || "").toUpperCase().replace(/[^0-9A-Z]/g, "");
   if (s.startsWith("OF")) s = s.slice(2);
   s = s.replace(/O/g, "0").replace(/[IL]/g, "1");
-  const f = FORMATOS[s.length];
-  if (!f) return {erro: "O código tem 9 ou 16 caracteres depois de OF, por exemplo OF-1A2-B3C-D4E."};
+  if (s.length !== TAM_TRIAGEM && s.length !== TAM_COMPLETO) return {erro: "O código tem 9 ou 16 caracteres depois de OF, por exemplo OF-1A2-B3C-D4E."};
   const vals = [...s].map(ch => B32.indexOf(ch));
   if (vals.some(v => v < 0)) return {erro: "O código tem um caractere que não existe neste formato. Confira se foi copiado sem erros."};
   if (conferencia(vals.slice(0, -1)) !== vals.at(-1)) return {erro: "O código não confere. Provavelmente um caractere foi digitado ou copiado errado."};
   let x = 0n; vals.slice(0, -1).forEach(v => { x = x * 32n + BigInt(v); });
-  const out = []; for (let i = f.bases.length - 1; i >= 0; i--){ const b = BigInt(f.bases[i]); out.unshift(Number(x % b)); x /= b; }
-  if (x !== 0n || out[0] !== f.ver) return {erro: "Este código não foi gerado por esta versão do app."};
-  const [, pub, mask, urg, int, dia] = out;
-  if (!COD_PUB[pub] || !COD_URG[urg]) return {erro: "O código não confere. Provavelmente um caractere foi digitado ou copiado errado."};
+  const versao = Number(x % BigInt(BASE_VERSAO)); x /= BigInt(BASE_VERSAO);
+  const q = QUESTIONARIOS[versao];
+  if (!q) return {erro: `Este código usa a versão ${versao} do questionário, que este app não conhece. Abra a versão mais recente do app.`};
+  const completo = s.length === TAM_COMPLETO;
+  const bases = completo ? [...basesTriagem(q), ...basesPaciente(q)] : basesTriagem(q);
+  const out = []; for (let i = bases.length - 1; i >= 0; i--){ const b = BigInt(bases[i]); out.unshift(Number(x % b)); x /= b; }
+  if (x !== 0n) return {erro: "O código não confere. Provavelmente um caractere foi digitado ou copiado errado."};
+  const [pub, mask, urg, int, dia, aleat] = out;
   const hoje = diaHoje(), k = hoje - (((hoje - dia) % 1024) + 1024) % 1024;
-  const c = vals.map(v => B32[v]).join("");
   const r = {
-    codigo: "OF-" + c.match(new RegExp(`.{1,${f.grupo}}`, "g")).join("-"),
-    completo: f.ver === 2, bruto: out,
-    pub: COD_PUB[pub], trat: TRAT.filter((o, i) => mask & (1 << i)).map(o => o.id),
-    urg: COD_URG[urg], int: COD_INT[int], data: new Date(DIA0 + k * 864e5)
+    codigo: formatar(vals, s.length), completo, versao, q, bruto: {dia, aleat},
+    pub: q.pub[pub].id, trat: q.trat.filter((o, i) => mask & (1 << i)).map(o => o.id),
+    urg: q.urg[urg].id, int: q.int[int].id, data: new Date(DIA0 + k * 864e5)
   };
-  if (r.completo){
-    const p = out.slice(7);
+  if (completo){
+    const p = out.slice(6), nv = q.valores.length, ns = q.sure.length;
     r.pac = {
       dpac: p[0], dataPac: new Date(r.data.getTime() + p[0] * 864e5),
-      vals: p.slice(1, 7), lean: COD_LEAN[p[7]], sure: p.slice(8, 12).map(v => COD_YN[v]),
-      perg: PERGUNTAS.map((q, i) => !!(p[12] & (1 << i)))
+      vals: p.slice(1, 1 + nv), lean: q.lean[p[1 + nv]].id,
+      sure: p.slice(2 + nv, 2 + nv + ns).map(v => q.yn[v].id),
+      perg: q.perguntas.map((t, i) => !!(p[2 + nv + ns] & (1 << i)))
     };
   }
   return r;
 }
-function nivelRisco(trat){
-  const sel = TRAT.filter(o => trat.includes(o.id));
+function nivelRisco(trat, q = Q){
+  const sel = q.trat.filter(o => trat.includes(o.id));
   const max = sel.length ? Math.max(...sel.map(o => o.nivel)) : -1;
   return max >= 3 ? ["alto","Risco alto"] : max === 2 ? ["inter","Risco intermediário"] : max === 1 ? ["baixo","Risco baixo a intermediário"] : ["incerto","Risco incerto"];
 }
 const dataFmt = (dt, dias = 0) => { const x = new Date(dt.getTime() + dias * 864e5); return `${String(x.getUTCDate()).padStart(2,"0")}/${String(x.getUTCMonth()+1).padStart(2,"0")}/${x.getUTCFullYear()}`; };
-const URG_DIAS = {"1":3, "2":7, "3":14};
-const TXT_PUB = {s:"Sim, pós-púbere", n:"Não (pré-púbere)", x:"Não sabe"};
-const TXT_INT = {s:"Quer conversar sobre fertilidade", i:"Está indeciso", n:"Não quer conversar neste momento", p:"Sem triagem profissional"};
+const opc = (lista, id) => lista.find(o => o.id === id) || {t: "Não informado"};
+const versaoTxt = r => `Versão ${r.versao} do questionário (${r.q.data})`;
 function resumoCodigo(r){
-  if (r.int === "p") return [["Triagem", "Sem triagem profissional (guia aberto diretamente pelo paciente)"]];
-  const u = URG.find(o => o.id === r.urg);
-  const prazo = URG_DIAS[r.urg] ? ` (até ${dataFmt(r.data, URG_DIAS[r.urg])})` : "";
+  const q = r.q;
+  if (r.int === "p") return [["Triagem", "Sem triagem profissional (guia aberto diretamente pelo paciente)"], ["Questionário", versaoTxt(r)]];
+  const u = opc(q.urg, r.urg);
+  const prazo = u.dias ? ` (até ${dataFmt(r.data, u.dias)})` : u.depois ? ` (depois de ${dataFmt(r.data, u.depois)})` : "";
   return [
     ["Data da triagem", dataFmt(r.data)],
-    ["Pós-púbere", TXT_PUB[r.pub]],
-    ["Tratamento planejado", TRAT.filter(o => r.trat.includes(o.id)).map(o => o.t).join("; ")],
-    ["Início do tratamento", (u ? u.t : "Não informado") + prazo],
-    ["Interesse", TXT_INT[r.int]],
-    ["Classificação", nivelRisco(r.trat)[1]]
+    ["Pós-púbere", opc(q.pub, r.pub).t],
+    ["Tratamento planejado", q.trat.filter(o => r.trat.includes(o.id)).map(o => o.t).join("; ")],
+    ["Início do tratamento", u.t + prazo],
+    ["Interesse", opc(q.int, r.int).t],
+    ["Classificação", nivelRisco(r.trat, q)[1]],
+    ["Questionário", versaoTxt(r)]
   ];
 }
 function prontidaoTxt(sure){
   if (sure.some(v => !v)) return "Não respondeu todas as perguntas";
-  return sure.includes("n") ? "Ainda tem dúvidas (pelo menos um \"não\")" : "Sente-se pronto para decidir (quatro \"sim\")";
+  return sure.includes("n") ? "Ainda tem dúvidas (pelo menos um \"não\")" : "Sente-se pronto para decidir (todas \"sim\")";
 }
 /* valor de texto é escapado; valor {html} já vem montado e escapado por listaHtml */
 const tabelaResumo = linhas => `<dl class="dl">${linhas.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${typeof v === "object" ? v.html : esc(v)}</dd>`).join("")}</dl>`;
 const listaHtml = itens => ({html: itens.length ? `<ul class="notes">${itens.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "Nenhuma"});
-function resumoPaciente(p){
+function resumoPaciente(r){
+  const q = r.q, p = r.pac;
   return [
     ["Preenchido em", p.dpac >= 63 ? "63 dias ou mais após a triagem" : dataFmt(p.dataPac)],
-    ["Inclinação hoje", TXT_LEAN[p.lean]],
-    ["O que pesa", listaHtml(VALORES.map((t, i) => `${t}: ${NIVEL_VAL[p.vals[i]].toLowerCase()}`))],
-    ["Prontidão (SURE)", listaHtml([...SURE_Q.map((q, i) => `${q} ${p.sure[i] === "s" ? "Sim" : p.sure[i] === "n" ? "Não" : "Sem resposta"}`), prontidaoTxt(p.sure)])],
-    ["Quer perguntar na consulta", listaHtml(PERGUNTAS.filter((q, i) => p.perg[i]))]
+    ["Inclinação hoje", opc(q.lean, p.lean).t],
+    ["O que pesa", listaHtml(q.valores.map((t, i) => `${t}: ${q.niveis[p.vals[i]].toLowerCase()}`))],
+    ["Prontidão (SURE)", listaHtml([...q.sure.map((t, i) => `${t} ${opc(q.yn, p.sure[i]).t}`), prontidaoTxt(p.sure)])],
+    ["Quer perguntar na consulta", listaHtml(q.perguntas.filter((t, i) => p.perg[i]))]
   ];
 }
 function blocoRespostas(r){
-  const nivel = r.int === "p" ? null : nivelRisco(r.trat);
+  const nivel = r.int === "p" ? null : nivelRisco(r.trat, r.q);
   return `<section class="panel" aria-labelledby="res-cod">
       <div class="risk"><h2 id="res-cod"><span class="code" style="font-size:1.05rem">${esc(r.codigo)}</span></h2>${nivel ? `<span class="pill ${nivel[0]}">${nivel[1]}</span>` : ""}</div>
       <h3>Triagem da equipe de saúde</h3>
       ${tabelaResumo(resumoCodigo(r))}
       ${r.urg === "1" || r.urg === "2" ? `<p class="err">Prazo curto: priorize o agendamento da coleta.</p>` : ""}
-      ${r.completo ? `<h3>Respostas do paciente</h3>${tabelaResumo(resumoPaciente(r.pac))}` : `<p class="small muted">Este é o código da triagem. O paciente ainda não preencheu o guia.</p>`}
+      ${r.completo ? `<h3>Respostas do paciente</h3>${tabelaResumo(resumoPaciente(r))}` : `<p class="small muted">Este é o código da triagem. O paciente ainda não preencheu o guia.</p>`}
       <p class="small muted">Somente leitura. O código não contém nome nem contato; a identificação acontece só se o paciente se apresentar na conversa.</p>
     </section>`;
+}
+
+/* Autoteste: no console do navegador, rode testarCodigos(). Deve terminar com "falhas: 0". */
+function testarCodigos(n = 3000){
+  let falhas = 0;
+  const rnd = k => Math.floor(Math.random() * k), pick = l => l[rnd(l.length)].id;
+  for (let i = 0; i < n; i++){
+    const d = {pub: pick(Q.pub), trat: Q.trat.filter(() => Math.random() < .3).map(o => o.id), urg: pick(Q.urg), int: pick(Q.int)};
+    const pac = {vals: Q.valores.map(() => rnd(Q.niveis.length)), lean: pick(Q.lean), sure: Q.sure.map(() => pick(Q.yn)), perg: Q.perguntas.map(() => Math.random() < .5)};
+    const t = decodificar(codificarTriagem(d)), c = decodificar(codificarCompleto(t, pac));
+    const ok = [t, c].every(r => !r.erro && r.versao === Q_ATUAL && r.pub === d.pub && r.urg === d.urg && r.int === d.int && r.trat.join() === d.trat.join())
+      && c.pac.vals.join() === pac.vals.join() && c.pac.lean === pac.lean && c.pac.sure.join() === pac.sure.join() && c.pac.perg.join() === pac.perg.join();
+    if (!ok) falhas++;
+  }
+  console.log(`testarCodigos: ${n} casos, falhas: ${falhas}`);
+  return falhas;
 }
 
 function baseUrl(){ return CONFIG.appUrl || (location.origin + location.pathname); }
@@ -2667,8 +2743,9 @@ function linkWhats(code){
   const r = decodificar(code);
   let prazo = "";
   if (!r.erro){
-    if (URG_DIAS[r.urg]) prazo = ` Meu tratamento está previsto para começar até ${dataFmt(r.data, URG_DIAS[r.urg])}.`;
-    else if (r.urg === "4") prazo = ` Meu tratamento está previsto para começar depois de ${dataFmt(r.data, 14)}.`;
+    const u = opc(r.q.urg, r.urg);
+    if (u.dias) prazo = ` Meu tratamento está previsto para começar até ${dataFmt(r.data, u.dias)}.`;
+    else if (u.depois) prazo = ` Meu tratamento está previsto para começar depois de ${dataFmt(r.data, u.depois)}.`;
     else if (r.urg === "0") prazo = " Meu tratamento já começou.";
   }
   const msg = `Olá! Preenchi o guia Decidir Antes sobre preservação da fertilidade e gostaria de conversar com o serviço.${prazo} Minhas respostas, sem identificação: ${linkVer(code)}`;

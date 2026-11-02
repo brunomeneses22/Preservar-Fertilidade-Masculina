@@ -19,29 +19,18 @@ O paciente pode abrir o guia sem triagem (`#pda`). Nesse caso, o resumo final in
 
 Os dois códigos usam base32 de Crockford e terminam em 1 caractere de conferência. Esse caractere é uma soma ponderada módulo 31, que detecta erros de digitação de um caractere e trocas entre vizinhos. Na leitura, são aceitos letras minúsculas, hífens, `O` (lido como 0) e `I`/`L` (lidos como 1).
 
-**Código da triagem** (versão 1, 9 caracteres, `OF-XXX-XXX-XXX`), com 40 bits:
+- **Código da triagem:** 9 caracteres (`OF-XXX-XXX-XXX`). Leva puberdade, tratamentos, início, interesse, data da triagem e uma parte aleatória.
+- **Código completo:** 16 caracteres (`OF-XXXX-XXXX-XXXX-XXXX`). Leva tudo da triagem, mais os dias até o preenchimento, um nível por valor, a inclinação, as respostas do SURE e as perguntas marcadas.
 
-| Campo | Valores |
-| --- | --- |
-| Versão | 1 |
-| Puberdade | Sim, não ou não sabe |
-| Tratamentos | Um bit por opção da triagem (9 opções) |
-| Início | Até 3 dias, 4 a 7, 8 a 14, mais de 14, já começou ou não informado |
-| Interesse | Quer conversar, indeciso, não agora ou sem triagem profissional |
-| Data | Dia da triagem (ciclo de 1024 dias a partir de 01/01/2026) |
-| Aleatório | 11 bits, para que dois casos iguais gerem códigos diferentes |
+### Versão do questionário
 
-**Código completo** (versão 2, 16 caracteres, `OF-XXXX-XXXX-XXXX-XXXX`), com todos os campos da triagem e mais estes, em até 75 bits:
+Todo código registra a **versão do questionário** com que foi respondido, nos 6 bits finais do número codificado. Os textos de todas as versões ficam em `QUESTIONARIOS`, no `index.html`. Assim, um código antigo é sempre exibido com as perguntas e opções que o paciente viu. A tela de leitura mostra a versão, por exemplo "Versão 1 do questionário (02/11/2026)".
 
-| Campo | Valores |
-| --- | --- |
-| Preenchimento | Dias entre a triagem e o preenchimento (0 a 63) |
-| Valores | 6 itens, de 0 (pouco importante) a 4 (muito importante) |
-| Inclinação | Congelar, não congelar agora, ainda não sei ou sem resposta |
-| SURE | 4 perguntas: sim, não ou sem resposta |
-| Perguntas para a consulta | Um bit por pergunta (6 perguntas) |
+Para mudar perguntas, crie uma nova versão e nunca edite uma existente. As regras estão no [`CLAUDE.md`](CLAUDE.md).
 
-**É codificação, não criptografia.** Os códigos não contêm nome, documento nem contato, mas quem tem o link consegue ler as respostas. O app informa isso ao paciente antes do envio. A tela do link é somente leitura, mas nada impede que alguém monte outro código à mão. Garantir que um código não foi forjado exigiria assinatura com chave secreta e, portanto, um servidor. Mudar a ordem ou a quantidade de opções exige uma nova versão de código.
+### Privacidade e limites
+
+**É codificação, não criptografia.** Os códigos não contêm nome, documento nem contato, mas quem tem o link consegue ler as respostas. O app informa isso ao paciente antes do envio. A tela do link é somente leitura, mas isso não impede que alguém monte outro código à mão. Garantir que um código não foi forjado exigiria assinatura com chave secreta e, portanto, um servidor.
 
 O QR code é gerado no próprio navegador pela biblioteca qrcode-generator 1.4.4 (Kazuhiko Arase, licença MIT), incluída no `index.html`. Não há dependência de CDN para isso.
 
@@ -52,6 +41,7 @@ O QR code é gerado no próprio navegador pela biblioteca qrcode-generator 1.4.4
 | `index.html` | O app inteiro, num único arquivo estático |
 | `docs/plano-12-semanas.md` | Plano de desenvolvimento, base de evidências e checklist IPDAS 5.0 |
 | `docs/protocolo-cep-ufc.md` | Projeto de pesquisa do teste alfa, no modelo do CEP-UFC, com apêndices e TCLEs |
+| `CLAUDE.md` | Regras permanentes de manutenção, inclusive o versionamento do questionário |
 
 ## Como usar
 
