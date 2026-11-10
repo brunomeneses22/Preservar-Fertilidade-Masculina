@@ -2875,7 +2875,7 @@ function resultadoTriagem(d){
 function telaPDA(code){
   let r = code ? decodificar(code) : null;
   if (r && (r.erro || r.completo)) r = null;      // só um código de triagem válido continua no guia
-  const sec = (id, n, titulo, corpo) => `<section class="step" id="${id}"><span class="stepno">PASSO ${n} DE 6</span><h2>${titulo}</h2>${corpo}</section>`;
+  const sec = (id, n, titulo, corpo) => `<section class="step" id="${id}"><span class="stepno">PASSO ${n} DE 5</span><h2>${titulo}</h2>${corpo}</section>`;
   return `${draftBanner()}
   <div class="stack">
     <p class="eyebrow">Guia de decisão para o paciente</p>
@@ -2884,17 +2884,18 @@ function telaPDA(code){
     ${r ? `<p class="small">Sua equipe de saúde já preencheu a triagem. Responda os passos abaixo; no final, você decide se envia suas respostas ao serviço.</p>` : ""}
   </div>
 
-  ${sec("p1",1,"Por que falar disso agora", `
+  <section class="step" id="porque"><h2>Por que falar disso agora</h2>
     <p>Alguns tratamentos de câncer podem diminuir ou parar a produção de espermatozoides. Às vezes o efeito passa em meses ou anos; às vezes é permanente. É difícil saber de antemão o que vai acontecer com cada pessoa.</p>
     <p>O risco depende principalmente do tipo de tratamento. É maior com alguns quimioterápicos (os chamados alquilantes), radioterapia perto dos testículos e transplante de medula.</p>
     <p>Congelar sêmen só é possível com segurança <b>antes</b> do tratamento começar. Por isso o assunto aparece agora, num momento que já é difícil.</p>
-    <div class="callout"><h3>Para quem é este guia</h3><p>Homens e adolescentes que já passaram pela puberdade, com câncer e um tratamento que pode afetar a fertilidade. Se você tem menos de 18 anos, use o guia junto com seus responsáveis. Ele não serve para meninos antes da puberdade.</p></div>`)}
+    <div class="callout"><h3>Para quem é este guia</h3><p>Homens e adolescentes que já passaram pela puberdade, com câncer e um tratamento que pode afetar a fertilidade. Se você tem menos de 18 anos, use o guia junto com seus responsáveis. Ele não serve para meninos antes da puberdade.</p></div>
+  </section>
 
   <nav class="toc" aria-label="Passos do guia">
-    ${["Por que agora","As opções","Os números","O que pesa para você","Você está pronto?","Próximos passos"].map((t,i) => `<button type="button" data-go="p${i+1}">${i+1}. ${t}</button>`).join("")}
+    ${["As opções","Os números","O que pesa para você","Você está pronto?","Próximos passos"].map((t,i) => `<button type="button" data-go="p${i+1}">${i+1}. ${t}</button>`).join("")}
   </nav>
 
-  ${sec("p2",2,"As duas opções, lado a lado", `
+  ${sec("p1",1,"As duas opções, lado a lado", `
     <p>As duas opções são escolhas razoáveis. Leia as duas colunas inteiras.</p>
     <div class="tablewrap"><table>
       <thead><tr><th scope="col">Aspecto</th><th scope="col">Congelar sêmen agora</th><th scope="col">Não congelar agora</th></tr></thead>
@@ -2909,7 +2910,7 @@ function telaPDA(code){
       </tbody>
     </table></div>`)}
 
-  ${sec("p3",3,"Os números", `
+  ${sec("p2",2,"Os números", `
     <p>Os números abaixo são a <b>nossa melhor estimativa</b>, a partir de estudos com milhares de homens. Eles não dizem o que vai acontecer com você, e a sua equipe pode ajustar para o seu caso. Cada quadro mostra 100 homens.</p>
     <div class="figs">
       <div class="panel fig"><h3>Se congelar</h3>
@@ -2925,7 +2926,7 @@ function telaPDA(code){
     </div>
     <p class="small muted">Os períodos variam entre os estudos: alguns seguiram os homens por poucos anos, outros por décadas.</p>`)}
 
-  ${sec("p4",4,"O que pesa para você", `
+  ${sec("p3",3,"O que pesa para você", `
     <p>Mova cada barra conforme a importância para você. Não há pontuação nem resposta certa. O resumo serve para você levar à conversa com a sua equipe.</p>
     <div class="panel vals" id="vals">
       ${VALORES.map((t, i) => [`v${i+1}`, t]).map(([id,t]) => `<div class="val"><label for="${id}">${t}</label><input type="range" id="${id}" min="0" max="4" step="1" value="2" data-t="${esc(t)}"><div class="scale"><span>Pouco importante</span><span>Muito importante</span></div></div>`).join("")}
@@ -2939,14 +2940,14 @@ function telaPDA(code){
       </fieldset>
     </div>`)}
 
-  ${sec("p5",5,"Você está pronto para decidir?", `
+  ${sec("p4",4,"Você está pronto para decidir?", `
     <p>Quatro perguntas rápidas, baseadas no teste SURE. Se alguma resposta for "não", converse mais com a sua equipe antes de decidir.</p>
     <div class="panel sure" id="sure">
       ${SURE_Q.map((t, i) => [`s${i+1}`, t]).map(([id,t]) => `<div class="q"><span>${t}</span><span class="yn"><label><input type="radio" name="${id}" id="${id}-s" value="s">Sim</label><label><input type="radio" name="${id}" id="${id}-n" value="n">Não</label></span></div>`).join("")}
       <p id="sure-res" class="muted small">Responda as quatro perguntas.</p>
     </div>`)}
 
-  ${sec("p6",6,"Próximos passos", `
+  ${sec("p5",5,"Próximos passos", `
     <div class="panel">
       <h3>Perguntas para levar à consulta</h3>
       <ul class="checks">

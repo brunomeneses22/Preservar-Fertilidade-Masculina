@@ -9,7 +9,7 @@ Ferramenta web de apoio à decisão (PDA, *patient decision aid*) sobre preserva
 O app é *stateless*: não há servidor nem banco de dados. As respostas viajam dentro do link e do QR code, no fragmento da URL (depois do `#`), que o navegador não envia ao servidor.
 
 1. **Profissional (aba Profissional):** preenche a triagem de 4 perguntas (puberdade, tratamento planejado, prazo e interesse). O app mostra a categoria de risco e gera um QR code e um link `#pda-OF-XXX-XXX-XXX` com essas respostas codificadas. Também gera um texto para o prontuário.
-2. **Paciente, no próprio celular:** abre o QR ou o link e continua o guia de 6 passos de forma anônima: opções lado a lado, números em pictogramas, exercício de valores, inclinação, teste SURE e perguntas para a consulta. No final, toca em **Gerar meu resumo**. O app cria um novo QR e um link `#ver-OF-XXXX-XXXX-XXXX-XXXX` com a triagem e todas as respostas dele.
+2. **Paciente, no próprio celular:** abre o QR ou o link, lê por que o assunto aparece agora e continua o guia de 5 passos de forma anônima: opções lado a lado, números em pictogramas, exercício de valores, inclinação, teste SURE e perguntas para a consulta. No final, toca em **Gerar meu resumo**. O app cria um novo QR e um link `#ver-OF-XXXX-XXXX-XXXX-XXXX` com a triagem e todas as respostas dele.
 3. **Envio:** o botão **Abrir no WhatsApp** abre uma conversa com o número cadastrado em `CONFIG.whatsapp`, com o link já na mensagem. Enviar é opcional.
 4. **Quem recebe o link** vê todas as respostas numa tela somente leitura. Na aba **Serviço**, também dá para colar o código.
 
@@ -56,7 +56,7 @@ Edite o bloco `CONFIG` no início do script do `index.html`:
 - `financiamento`: declaração de quem financia o desenvolvimento e a hospedagem.
 - `rascunho`: mude para `false` só depois da validação.
 
-Os custos de coleta e de armazenamento ainda aparecem como "a definir" no passo 2 do guia.
+Os custos de coleta e de armazenamento ainda aparecem como "a definir" no passo 1 do guia ("As duas opções, lado a lado").
 
 ## Autoria
 
