@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Guia em linguagem simples para homens com diagnóstico recente de câncer entenderem e decidirem sobre a preservação da fertilidade antes do tratamento.">
+<title>Guia para entender sobre fertilidade antes do tratamento do câncer</title>
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-size:14px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+/* Layout: one calm reading column (~68ch) under a sticky tab bar; each "page" is a hash-routed view.
+   Motif: the cryo bank — cool steel-blue grounds, a single deep teal accent, -196 °C as a recurring data detail. */
+:root{
+  --bg:#F3F6F7;
+  --surface:#FFFFFF;
+  --tint:#E2EEF1;
+  --ink:#14242C;
+  --muted:#4E626B;
+  --line:#CBD8DD;
+  --accent:#0B6E66;
+  --accent-ink:#FFFFFF;
+  --warm:#B5641C;
+  --warm-bg:#FBF0E4;
+  --risk-high:#C8372D; --risk-mid:#E2B11A; --risk-low:#3E9B4F; --risk-unk:#A3ADB2;
+  --font-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --s-1:.875rem; --s0:1.0625rem; --s1:1.25rem; --s2:1.6rem; --s3:2.2rem; --s4:clamp(2.2rem,6vw,3.4rem);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E171B; --surface:#152329; --tint:#1B3038; --ink:#E6EFF1; --muted:#9DB1B8; --line:#2A3F47;
+    --accent:#4FC2B4; --accent-ink:#06201D; --warm:#E9A464; --warm-bg:#2A1F15; --risk-high:#E5584C; --risk-mid:#F0C53A; --risk-low:#5CBF6E; --risk-unk:#6B7980; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E171B; --surface:#152329; --tint:#1B3038; --ink:#E6EFF1; --muted:#9DB1B8; --line:#2A3F47;
+  --accent:#4FC2B4; --accent-ink:#06201D; --warm:#E9A464; --warm-bg:#2A1F15; --risk-high:#E5584C; --risk-mid:#F0C53A; --risk-low:#5CBF6E; --risk-unk:#6B7980; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--s0);line-height:1.65;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;text-wrap:balance;margin:0;font-weight:700;letter-spacing:-.01em}
+h1{font-size:var(--s4)}
+h2{font-size:var(--s3)}
+h3{font-size:var(--s1)}
+p{margin:0}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:46rem;margin:0 auto}
+.wide{max-width:64rem;margin:0 auto}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-inner{display:flex;flex-direction:column;align-items:stretch;gap:.4rem;max-width:64rem;margin:0 auto;padding-block:.6rem}
+.brand{font-family:var(--font-display);font-weight:700;font-size:1.05rem;line-height:1.3;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.brand-dot{width:.7rem;height:.7rem;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--tint)}
+nav.tabs{overflow-x:auto;min-width:0;flex:1;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs ul{display:flex;gap:.25rem;list-style:none;margin:0;padding:0;justify-content:flex-start}
+nav.tabs li{display:flex;align-items:center;gap:.25rem}
+nav.tabs li + li::before{content:"›";color:var(--line);font-size:1.4rem;line-height:1;font-weight:700}
+nav.tabs li.aside{margin-left:auto;padding-left:.75rem;border-left:1px solid var(--line)}
+nav.tabs li.aside::before{content:none}
+nav.tabs li.aside .tab-step{visibility:hidden}
+nav.tabs li.home{padding-right:.75rem;margin-right:.25rem;border-right:1px solid var(--line)}
+nav.tabs li.home .tab-step{visibility:hidden}
+nav.tabs li.home + li::before{content:none}
+nav.tabs a{display:grid;justify-items:center;gap:.1rem;padding:.4rem .75rem;border-radius:12px;color:var(--muted);text-decoration:none;font-weight:700;font-size:.95rem;line-height:1.2;white-space:nowrap}
+nav.tabs .tab-step{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;opacity:.8}
+nav.tabs a:hover{color:var(--ink);background:var(--tint)}
+nav.tabs a.done{color:var(--accent)}
+nav.tabs a.done .tab-step::after{content:" ✓"}
+nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+nav.tabs a[aria-current="page"] .tab-step{opacity:1}
+@media (max-width:720px){
+  .top-inner{flex-direction:column;align-items:stretch;gap:.4rem}
+  nav.tabs ul{justify-content:flex-start}
+}
+
+main{padding-block:2.5rem 4rem}
+section.view{display:grid;gap:2.5rem}
+.stack{display:grid;gap:1rem}
+.eyebrow{font-size:var(--s-1);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:var(--s1);color:var(--ink);line-height:1.55}
+.muted{color:var(--muted)}
+
+/* hero */
+.hero{display:grid;gap:1.25rem;padding-block:1rem 0}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.breath{display:flex;align-items:center;gap:1rem;background:var(--tint);border-radius:18px;padding:1.1rem 1.25rem}
+.breath-orb{flex:none;width:3rem;height:3rem;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--surface),var(--accent));animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.78)}50%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.breath-orb{animation:none}}
+
+/* feelings list */
+.feel{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.75rem}
+.feel div{border:1px solid var(--line);border-radius:14px;padding:1rem;background:var(--surface);min-width:0}
+.feel b{display:block;font-family:var(--font-display);font-size:1.05rem;margin-bottom:.2rem}
+
+/* steps (real sequence) */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:2.6rem 1fr;gap:1rem;padding-bottom:1.4rem;position:relative}
+ol.steps li::before{content:counter(s);width:2.6rem;height:2.6rem;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;background:var(--surface);border:2px solid var(--accent);color:var(--accent)}
+ol.steps li:not(:last-child)::after{content:"";position:absolute;left:1.25rem;top:2.7rem;bottom:.2rem;width:2px;background:var(--line)}
+ol.steps li > div{min-width:0;padding-top:.3rem}
+ol.steps h3{margin-bottom:.2rem}
+
+.callout{border-radius:16px;padding:1.1rem 1.25rem;background:var(--warm-bg);border:1px solid color-mix(in srgb,var(--warm) 35%,transparent)}
+.callout strong{color:var(--warm)}
+.note{font-size:var(--s-1);color:var(--muted)}
+
+.temp{font-family:var(--font-data);font-size:.92em;background:var(--tint);padding:.05rem .4rem;border-radius:6px;white-space:nowrap}
+
+/* option blocks */
+.opt{display:grid;gap:.75rem;padding:1.5rem;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.opt.main-opt{border:2px solid var(--accent)}
+.opt-head{display:flex;flex-wrap:wrap;gap:.5rem .75rem;align-items:baseline;justify-content:space-between}
+.pill{display:inline-block;font-size:.8rem;font-weight:700;padding:.2rem .65rem;border-radius:999px;letter-spacing:.02em;white-space:nowrap}
+.pill.ok{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.pill.mid{background:var(--tint);color:var(--muted)}
+.pill.warn{background:var(--warm-bg);color:var(--warm)}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:.35rem 1rem;margin:0}
+dl.facts dt{font-weight:700;color:var(--muted);font-size:.95rem}
+dl.facts dd{margin:0;min-width:0}
+@media (max-width:520px){dl.facts{grid-template-columns:1fr}dl.facts dd{margin-bottom:.4rem}}
+
+details{border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+details summary{cursor:pointer;padding:1rem 1.2rem;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"+";font-family:var(--font-display);font-size:1.3rem;line-height:1;color:var(--accent)}
+details[open] summary::after{content:"–"}
+details > div{padding:0 1.2rem 1.1rem}
+.faq{display:grid;gap:.6rem}
+
+/* comparison table */
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:52rem;font-size:.97rem}
+th,td{text-align:left;vertical-align:top;padding:.85rem 1rem;border-bottom:1px solid var(--line)}
+thead th{font-family:var(--font-display);font-size:1rem;background:var(--tint);position:sticky;top:0}
+tbody th{font-weight:700;color:var(--muted);width:11rem;font-size:.92rem}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+td.hl,th.hl{background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.scroll-hint{font-size:var(--s-1);color:var(--muted)}
+@media (min-width:900px){.scroll-hint{display:none}}
+
+/* decision aid */
+.aid{display:grid;gap:1.5rem;padding:1.5rem;border-radius:20px;background:var(--tint)}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:.6rem;min-width:0}
+legend{font-weight:700;font-size:1.05rem;margin-bottom:.4rem;padding:0}
+.choices{display:flex;flex-wrap:wrap;gap:.5rem}
+.choices input{position:absolute;opacity:0;pointer-events:none}
+.choices label{cursor:pointer;padding:.55rem 1rem;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:.95rem}
+.choices input:checked + label{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.choices input:focus-visible + label{outline:3px solid var(--accent);outline-offset:2px}
+.summary{background:var(--surface);border-radius:16px;padding:1.25rem;display:grid;gap:.75rem;border:1px solid var(--line)}
+.summary ul{margin:0;padding-left:1.2rem;display:grid;gap:.4rem}
+.btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;padding:.65rem 1.2rem;border-radius:999px;background:var(--accent);color:var(--accent-ink);justify-self:start}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+#copyStatus{font-size:var(--s-1);color:var(--muted)}
+
+/* questions to ask */
+ul.ask{margin:0;padding:0;list-style:none;display:grid;gap:.5rem}
+ul.ask li{padding:.75rem 1rem;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 10px 10px 0}
+
+/* resources */
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:.75rem}
+.res a.card{display:grid;gap:.3rem;text-decoration:none;color:var(--ink);padding:1.1rem 1.2rem;border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0}
+.res a.card:hover{border-color:var(--accent)}
+.res a.card b{font-family:var(--font-display);font-size:1.05rem;color:var(--accent)}
+.res .card span{color:var(--muted);font-size:.95rem}
+.res .card .url{font-family:var(--font-data);font-size:.8rem;overflow-wrap:anywhere}
+.glossary{display:grid;gap:0;border-top:1px solid var(--line)}
+.glossary div{display:grid;grid-template-columns:12rem 1fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line)}
+.glossary dt{font-weight:700;margin:0}
+.glossary dd{margin:0;min-width:0}
+@media (max-width:560px){.glossary div{grid-template-columns:1fr;gap:.2rem}}
+
+/* references */
+ol.refs{margin:0;padding-left:1.6rem;display:grid;gap:.9rem}
+ol.refs li{padding-left:.3rem}
+ol.refs .src{color:var(--muted);font-size:.95rem}
+
+.next{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:1.5rem}
+.next{align-items:center}
+.next a{font-weight:700;text-decoration:none}
+.next a:last-child{margin-left:auto;background:var(--accent);color:var(--accent-ink);padding:.8rem 1.4rem;border-radius:999px;box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 45%,transparent);transition:transform .15s ease,box-shadow .15s ease}
+.next a:last-child:hover{transform:translateY(-1px);box-shadow:0 4px 10px color-mix(in srgb,var(--accent) 35%,transparent)}
+@media (prefers-reduced-motion:reduce){.next a:last-child{transition:none}.next a:last-child:hover{transform:none}}
+@media (max-width:560px){.next a:last-child{width:100%;text-align:center}}
+
+.feel .feel-note{display:block;margin-top:.5rem;font-family:var(--font-display);font-style:italic;font-weight:500;color:var(--accent)}
+
+/* decision statement */
+.decision{display:grid;gap:.4rem;padding:1.1rem 1.25rem;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.decision .big{font-family:var(--font-display);font-size:var(--s1);font-weight:700;line-height:1.3;text-wrap:balance}
+sup.cite{font-size:.7em;line-height:0;margin-left:.1em}
+sup.cite a{text-decoration:none;font-weight:700}
+.todo{background:var(--warm-bg);color:var(--warm);border:1px dashed var(--warm);border-radius:6px;padding:0 .35rem;font-weight:700}
+.about{display:grid;gap:0;border-top:1px solid var(--line)}
+.about > div{display:grid;grid-template-columns:12rem 1fr;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
+.about h3{font-size:1.05rem}
+.about > div > div{min-width:0;display:grid;gap:.4rem}
+@media (max-width:560px){.about > div{grid-template-columns:1fr;gap:.3rem}}
+.sure-result{font-weight:700}
+td ul{margin:0;padding-left:1.1rem;display:grid;gap:.3rem}
+
+/* share box (QR) */
+.share{display:grid;grid-template-columns:auto 1fr;gap:1.25rem;align-items:start;background:var(--surface);border-radius:16px;padding:1.25rem;border:1px solid var(--line)}
+.share > div{min-width:0;display:grid;gap:.6rem}
+.qr{width:11rem;max-width:100%;aspect-ratio:1;background:#FFFFFF;border-radius:12px;padding:.5rem;display:grid;place-items:center;border:1px solid var(--line)}
+.qr svg{width:100%;height:100%;display:block}
+.qr .qr-empty{color:#4E626B;font-size:.85rem;text-align:center;padding:.5rem}
+.share-link{font-family:var(--font-data);font-size:.8rem;background:var(--tint);border-radius:8px;padding:.5rem .65rem;overflow-wrap:anywhere;user-select:all}
+@media (max-width:560px){.share{grid-template-columns:1fr}.qr{width:12rem;justify-self:center}}
+.answers{display:grid;gap:0;border-top:1px solid var(--line)}
+.answers > div{display:grid;grid-template-columns:1fr 14rem;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.answers dt{margin:0}
+.answers dd{margin:0;font-weight:700;min-width:0}
+.answers dd.none{font-weight:400;color:var(--muted)}
+@media (max-width:560px){.answers > div{grid-template-columns:1fr;gap:.2rem}}
+
+/* option phases */
+.phase{font-size:var(--s1);color:var(--accent);display:flex;align-items:center;gap:1rem;margin-top:.5rem}
+.phase::after{content:"";flex:1;height:2px;background:var(--line)}
+
+/* progress */
+.progress{height:3px;background:var(--line);margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+.progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s ease}
+@media (prefers-reduced-motion:reduce){.progress span{transition:none}}
+
+/* risk scale */
+.risk{display:grid;gap:0;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.risk-axis{display:grid;grid-template-columns:1.4rem 1fr;gap:1rem;font-size:var(--s-1);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.risk-axis span:first-child{text-align:center}
+.risk-axis.top{padding-bottom:.4rem}
+.risk-axis.bottom{padding-top:.4rem}
+.risk-row{display:grid;grid-template-columns:1.4rem 1fr;gap:1rem}
+.risk-seg{background:var(--seg)}
+.r-high{--seg:var(--risk-high)} .r-mid{--seg:var(--risk-mid)} .r-low{--seg:var(--risk-low)} .r-unk{--seg:var(--risk-unk)}
+.r-high .risk-seg{border-radius:999px 999px 0 0}
+.r-low .risk-seg{border-radius:0 0 999px 999px}
+.r-unk .risk-seg{border-radius:999px}
+.r-low .risk-body{border-bottom:0}
+.risk-axis.mid{padding-block:.4rem 1rem;margin-bottom:.25rem;border-bottom:1px dashed var(--line)}
+.risk-body{display:grid;grid-template-columns:8rem 1fr;gap:1rem;padding-block:.9rem;min-width:0;border-bottom:1px solid var(--line)}
+.r-unk .risk-body{border-bottom:0}
+.risk-body p{min-width:0}
+.risk-tag{font-family:var(--font-display);font-weight:700;display:flex;align-items:center;gap:.5rem}
+@media (max-width:520px){.risk-body{grid-template-columns:1fr;gap:.25rem}}
+
+footer{border-top:1px solid var(--line);background:var(--surface)}
+footer .wrap{padding-block:1.75rem;display:grid;gap:.5rem;font-size:var(--s-1);color:var(--muted)}
+footer strong{color:var(--ink)}
+</style>
+</head>
+<body>
+
+
+<header class="top gutter">
+  <div class="top-inner">
+    <a class="brand" href="#inicio"><span class="brand-dot" aria-hidden="true"></span>Guia para entender sobre fertilidade antes do tratamento do câncer</a>
+    <nav class="tabs" aria-label="Seções do site">
+      <ul>
+        <li class="home"><a href="#inicio" data-route="inicio"><span class="tab-name">Início</span><span class="tab-step">Início</span></a></li>
+        <li><a href="#cancer" data-route="cancer"><span class="tab-name">Câncer e fertilidade</span><span class="tab-step">Etapa 1</span></a></li>
+        <li><a href="#opcoes" data-route="opcoes"><span class="tab-name">Opções</span><span class="tab-step">Etapa 2</span></a></li>
+        <li><a href="#comparar" data-route="comparar"><span class="tab-name">Comparar</span><span class="tab-step">Etapa 3</span></a></li>
+        <li><a href="#decidir" data-route="decidir"><span class="tab-name">Decidir</span><span class="tab-step">Etapa 4</span></a></li>
+        <li><a href="#recursos" data-route="recursos"><span class="tab-name">Recursos</span><span class="tab-step">Etapa 5</span></a></li>
+        <li class="aside"><a href="#referencias" data-route="referencias"><span class="tab-name">Referências</span><span class="tab-step">Consulta</span></a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="progress" aria-hidden="true"><span id="progBar"></span></div>
+</header>
+
+<main class="gutter">
+
+<!-- ============ INÍCIO ============ -->
+<section class="view wrap" id="view-inicio" aria-labelledby="h-inicio">
+  <div class="hero">
+    <p class="eyebrow">Se você acabou de receber um diagnóstico de câncer</p>
+    <h1 id="h-inicio">Respira. Você não está sozinho e <em>existe tempo</em> para cuidar do seu futuro.</h1>
+    <p class="lede">Receber um diagnóstico de câncer vira tudo de cabeça para baixo. Este site explica, em poucas palavras, uma coisa que muita gente só descobre após terminar o tratamento: em alguns casos, ele pode prejudicar sua fertilidade; mas também é importante saber que dá para “guardar” a sua fertilidade antes do tratamento.</p>
+  </div>
+
+  <div class="decision" role="note" aria-label="A decisão">
+    <p class="eyebrow">A decisão que este site ajuda a tomar</p>
+    <p class="big">Preservar ou não a sua fertilidade antes de começar o tratamento do câncer e, se preservar, de que forma.</p>
+    <p class="note">Para homens a partir de 18 anos com diagnóstico recente de câncer, antes de começar o tratamento. Não foi feito para menores de 18 anos nem para quem já terminou o tratamento.</p>
+  </div>
+
+  <div class="breath" role="note">
+    <div class="breath-orb" aria-hidden="true"></div>
+    <p>Se estiver muito ansioso agora, faça uma pausa. Puxe o ar contando até 4, solte contando até 6. Repita três vezes. Depois continue lendo, sem pressa.</p>
+  </div>
+
+  <div class="stack">
+    <h2>O que você pode estar sentindo</h2>
+    <p>Não existe jeito certo de reagir. Tudo isso é comum:</p>
+    <div class="feel">
+      <div><b>Medo</b>Do tratamento, do que vem pela frente, de perder o controle.<span class="feel-note">Vamos um passo de cada vez.</span></div>
+      <div><b>Confusão</b>Muita informação de uma vez. Muitas coisas para decidir.<span class="feel-note">É normal não lembrar tudo que falaram.</span></div>
+      <div><b>"Filho? Agora?"</b>Pensar em ter filhos pode parecer distante, muito incerto.<span class="feel-note">Mesmo assim vale conversar sobre isso.</span></div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <h2>Por que falar de fertilidade agora?</h2>
+    <p>Alguns tratamentos contra o câncer, como certos tipos de quimioterapia, radioterapia perto da pelve e algumas cirurgias, podem diminuir ou parar a produção de espermatozoides. Às vezes a produção volta depois de meses ou anos. Às vezes não volta.</p>
+    <p>A ciência ainda não consegue prever com certeza o que vai acontecer com a fertilidade após alguns tipos de tratamentos para o câncer. Por isso, o mais seguro é <strong>conversar sobre sua fertilidade antes do primeiro dia de tratamento</strong>.</p>
+    <div class="callout">
+      <p><strong>A boa notícia:</strong> conversar sobre o assunto, entender os riscos do tratamento para a sua fertilidade, conhecer as opções disponíveis e tomar uma decisão não atrasa o tratamento do câncer<sup class="cite"><a href="#referencias" title="Ver referência 1">1</a></sup>.</p>
+    </div>
+  </div>
+
+  <div class="next"><span class="muted">Etapa 1:</span><a href="#cancer">Entenda por que o tratamento pode afetar sua fertilidade →</a></div>
+</section>
+
+<!-- ============ CÂNCER E FERTILIDADE (RASCUNHO) ============ -->
+<section class="view wrap" id="view-cancer" aria-labelledby="h-cancer" hidden>
+  <div class="hero">
+    <p class="eyebrow">Câncer e fertilidade</p>
+    <h1 id="h-cancer">Como o tratamento pode afetar sua fertilidade</h1>
+    <p class="lede">Nem todo tratamento contra o câncer prejudica a fertilidade. Entender o porquê ajuda você a fazer as perguntas certas para a sua equipe.</p>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">Primeiro, como funciona</h2>
+    <p>Os testículos produzem espermatozoides o tempo todo, a partir de células que se dividem muito rápido. Cada espermatozoide leva cerca de <strong>2 a 3 meses</strong> para ficar pronto<sup class="cite"><a href="#referencias" title="Ver referência 8">8</a></sup>.</p>
+    <p>Muitos tratamentos contra o câncer atacam justamente as células que se dividem rápido. Por isso, além das células do tumor, eles podem atingir as células que fabricam os espermatozoides.</p>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">O que cada tratamento pode fazer</h2>
+    <div class="faq">
+      <details open><summary>Quimioterapia</summary><div><p>Alguns remédios fazem pouco efeito sobre os testículos. Outros, principalmente em doses altas ou somados entre si, podem parar a produção de espermatozoides por meses, anos ou de forma permanente. O risco depende do tipo de remédio, da dose total e do número de ciclos<sup class="cite"><a href="#referencias" title="Ver referências 7 e 8">7,8</a></sup>.</p></div></details>
+      <details><summary>Radioterapia</summary><div><p>O risco depende de onde a radiação é aplicada. Na pelve, na virilha ou perto dos testículos, o risco é maior. Na cabeça, a radiação pode afetar a glândula que comanda os hormônios dos testículos. Longe dessas regiões, o risco costuma ser baixo<sup class="cite"><a href="#referencias" title="Ver referência 8">8</a></sup>.</p></div></details>
+      <details><summary>Cirurgia</summary><div><p>A retirada de um testículo geralmente deixa o outro funcionando, mas a produção pode diminuir. A retirada dos dois testículos impede a produção. Cirurgias na pelve ou no abdômen, como as de próstata, bexiga, intestino ou dos gânglios atrás do abdômen, podem afetar a ejaculação ou a ereção.</p></div></details>
+      <details><summary>Tratamento com hormônios</summary><div><p>Usado em alguns tipos de câncer, como o de próstata. Ele diminui a testosterona, o que reduz a produção de espermatozoides e pode diminuir o desejo sexual.</p></div></details>
+      <details><summary>Transplante de medula óssea</summary><div><p>Antes do transplante, costumam ser usadas doses altas de quimioterapia, às vezes com radioterapia no corpo todo. O risco para a fertilidade é alto.</p></div></details>
+      <details><summary>Imunoterapia e remédios novos</summary><div><p>São tratamentos mais recentes, e ainda não se sabe bem como afetam a fertilidade. Na dúvida, vale conversar sobre preservação antes de começar.</p></div></details>
+    </div>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">Uma régua de risco</h2>
+    <p>Os especialistas costumam classificar o risco em quatro níveis<sup class="cite"><a href="#referencias" title="Ver referências 1 e 7">1,7</a></sup>. Pergunte à sua equipe em qual deles o seu tratamento está.</p>
+    <div class="risk">
+      <div class="risk-axis top" aria-hidden="true"><span>▲</span><span>Maior risco</span></div>
+      <div role="list">
+        <div class="risk-row r-high" role="listitem"><span class="risk-seg" aria-hidden="true"></span><div class="risk-body"><span class="risk-tag">Alto</span><p>Grande chance de a produção parar por muito tempo ou para sempre. Exemplos: transplante de medula, radiação direta nos testículos, alguns esquemas de quimioterapia em doses altas.</p></div></div>
+        <div class="risk-row r-mid" role="listitem"><span class="risk-seg" aria-hidden="true"></span><div class="risk-body"><span class="risk-tag">Intermediário</span><p>A produção costuma cair e muitas vezes volta, mas pode demorar anos. Exemplos: alguns esquemas usados em câncer de testículo e linfoma.</p></div></div>
+        <div class="risk-row r-low" role="listitem"><span class="risk-seg" aria-hidden="true"></span><div class="risk-body"><span class="risk-tag">Baixo</span><p>A produção pode cair por um tempo e geralmente volta. Exemplos: radiação longe da pelve, alguns esquemas de quimioterapia mais leves.</p></div></div>
+      </div>
+      <div class="risk-axis mid" aria-hidden="true"><span>▼</span><span>Menor risco</span></div>
+      <div role="list">
+        <div class="risk-row r-unk" role="listitem"><span class="risk-seg" aria-hidden="true"></span><div class="risk-body"><span class="risk-tag">Risco desconhecido</span><p>Ainda não há estudos suficientes. Exemplos: imunoterapia e muitos remédios novos.</p></div></div>
+      </div>
+    </div>
+    <p class="note">Estes exemplos são gerais. Só a sua equipe pode dizer o risco do seu tratamento.</p>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">O próprio câncer também pode afetar</h2>
+    <p>Mesmo antes do tratamento, alguns tipos de câncer, como o de testículo e os linfomas, já podem diminuir a quantidade ou a qualidade dos espermatozoides. A febre, a perda de peso e o estresse do diagnóstico também influenciam. Por isso, muitas vezes é feito um espermograma logo no início.</p>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">A fertilidade volta?</h2>
+    <p>Muitas vezes, sim. Depois do fim do tratamento, a produção pode voltar em 1 a 3 anos, e às vezes leva mais tempo<sup class="cite"><a href="#referencias" title="Ver referência 8">8</a></sup>. Em alguns casos, ela não volta. Hoje não existe um exame que preveja com certeza o que vai acontecer com cada pessoa.</p>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">E a vida sexual?</h2>
+    <p>Fertilidade e vida sexual são coisas diferentes. Muitos homens que ficam sem espermatozoides continuam tendo ereção, desejo e ejaculação normais. Mas o tratamento também pode mexer com o desejo, a ereção ou a ejaculação. Se isso acontecer, fale com a equipe: existe tratamento.</p>
+    <div class="callout"><p><strong>Atenção:</strong> durante o tratamento e por um tempo depois, use camisinha. Pergunte à sua equipe por quanto tempo isso é necessário no seu caso.</p></div>
+  </div>
+
+  <div class="next"><a href="#inicio">← Início</a><a href="#opcoes">Etapa 2: veja o que dá para fazer →</a></div>
+</section>
+
+<!-- ============ OPÇÕES ============ -->
+<section class="view wrap" id="view-opcoes" aria-labelledby="h-opcoes" hidden>
+  <div class="hero">
+    <p class="eyebrow">Opções</p>
+    <h1 id="h-opcoes">O que dá para fazer</h1>
+    <p class="lede">Existem algumas opções. A mais simples, o congelamento de sêmen, é também a mais estudada e a indicada pelas diretrizes para homens adultos<sup class="cite"><a href="#referencias" title="Ver referência 1">1</a></sup>. Veja quais existem e como cada uma funciona.</p>
+  </div>
+
+  <h2 class="phase">Antes de iniciar o tratamento</h2>
+
+  <article class="opt">
+    <div class="opt-head"><h2 style="font-size:var(--s2)">Congelar sêmen</h2><span class="pill ok">A mais estudada</span></div>
+    <p>Você coleta o sêmen por masturbação, em um frasco, na clínica especializada, em sala especial. O material é analisado, preparado e congelado. Mesmo com poucos espermatozoides é possível congelar: hoje com o avanço da reprodução assistida um espermatozoide saudável pode ser injetado dentro de um óvulo e utilizado para formar um embrião em laboratório.</p>
+    <dl class="facts">
+      <dt>Quanto tempo</dt><dd>Pode ser realizada prontamente, em média, até 3 dias.</dd>
+      <dt>Dói?</dt><dd>Não.</dd>
+      <dt>Atrasa o tratamento?</dt><dd>Não.</dd>
+      <dt>Antes de coletar</dt><dd>Não precisa de preparo, apenas é necessário coletar exames de sangue para pesquisar infecções, pois é uma norma da ANVISA<sup class="cite"><a href="#referencias" title="Ver referência 11">11</a></sup> (mas não precisa aguardar o resultado desses exames para congelar o sêmen).</dd>
+      <dt>Depois</dt><dd>Fica guardado por anos, tem validade indeterminada. Para usar, precisará de assistência reprodutiva com inseminação ou fertilização in vitro.</dd>
+    </dl>
+  </article>
+
+  <article class="opt">
+    <div class="opt-head"><h2 style="font-size:var(--s2)">Retirar espermatozoides do testículo</h2><span class="pill mid">Quando a coleta não dá certo</span></div>
+    <p>Se não houver espermatozoides no sêmen, ou se você não conseguir ejacular, o urologista pode buscar espermatozoides direto no testículo com uma pequena cirurgia. Quando é feita antes do tratamento do câncer, muitas vezes se chama <strong>onco-TESE</strong> ou micro-TESE<sup class="cite"><a href="#referencias" title="Ver referências 1 e 9">1,9</a></sup>.</p>
+    <dl class="facts">
+      <dt>Como é</dt><dd>Procedimento com anestesia, com entrada e saída do hospital no mesmo dia.</dd>
+      <dt>Dói?</dt><dd>Pode haver dor leve por alguns dias.</dd>
+      <dt>Atrasa o tratamento?</dt><dd>Pode atrasar pouco. Mas o tratamento para o câncer costuma necessitar de autorização primeiro, período em que ocorre a captação. Precisa ser combinado com o oncologista.</dd>
+      <dt>Às vezes</dt><dd>Pode ser feito junto com a cirurgia de retirada do testículo (no câncer de testículo).</dd>
+    </dl>
+  </article>
+
+  <article class="opt">
+    <div class="opt-head"><h2 style="font-size:var(--s2)">Outras formas de ajudar na coleta</h2><span class="pill mid">Situações específicas</span></div>
+    <p>Se a ansiedade, dor ou algum remédio atrapalhar a ejaculação, existem estímulos com vibração ou um estímulo elétrico leve feito por especialista. Fale abertamente com a equipe. Isso acontece com frequência e tem solução.</p>
+  </article>
+
+  <article class="opt">
+    <div class="opt-head"><h2 style="font-size:var(--s2)">Congelar tecido do testículo</h2><span class="pill warn">Experimental</span></div>
+    <p>É usado principalmente em meninos antes da puberdade, que ainda não produzem espermatozoides. Em adultos raramente é indicado e só é feito em pesquisa<sup class="cite"><a href="#referencias" title="Ver referências 1 e 7">1,7</a></sup>.</p>
+  </article>
+
+  <article class="opt">
+    <div class="opt-head"><h2 style="font-size:var(--s2)">Decidir não preservar</h2><span class="pill mid">Também é uma escolha</span></div>
+    <p>Você pode decidir que não quer fazer nada agora. Essa decisão é sua. O importante é que ela seja tomada com informação, e não por falta dela. Depois do tratamento, ainda é possível fazer exames para ver se a produção voltou. Se ela não voltar, não haverá material guardado.</p>
+  </article>
+
+  <h2 class="phase">Durante a realização do tratamento</h2>
+
+  <article class="opt">
+    <div class="opt-head"><h2 style="font-size:var(--s2)">Proteger os testículos na radioterapia</h2><span class="pill mid">Complementar</span></div>
+    <p>Quando a radiação é aplicada perto da pelve, a equipe de radioterapia pode usar uma proteção de chumbo ou planejar o feixe para reduzir a dose nos testículos<sup class="cite"><a href="#referencias" title="Ver referência 1">1</a></sup>. Pergunte se isso vale para o seu caso.</p>
+  </article>
+
+  <article class="opt">
+    <div class="opt-head"><h2 style="font-size:var(--s2)">Remédios para "proteger" os testículos</h2><span class="pill warn">Não recomendado</span></div>
+    <p>Já foram testados hormônios para "desligar" o testículo durante a quimioterapia. Os estudos não mostraram benefício em homens<sup class="cite"><a href="#referencias" title="Ver referência 1">1</a></sup>. Não substitui o congelamento.</p>
+  </article>
+
+  <div class="stack">
+    <h2>Dúvidas comuns</h2>
+    <div class="faq">
+      <details><summary>Já comecei a quimioterapia. Ainda dá?</summary><div><p>Converse com a sua equipe. Amostras coletadas depois do início podem ter mais danos no material genético, por isso o ideal é coletar antes<sup class="cite"><a href="#referencias" title="Ver referência 1">1</a></sup>. Em alguns casos, a equipe pode avaliar uma coleta mesmo assim, ou depois do fim do tratamento.</p></div></details>
+      <details><summary>Meus filhos podem nascer com problemas por causa do câncer?</summary><div><p>Com sêmen congelado antes do tratamento, os estudos não mostram aumento importante de problemas nos bebês<sup class="cite"><a href="#referencias" title="Ver referências 1 e 4">1,4</a></sup>. Esse é um dos motivos para coletar antes de começar.</p></div></details>
+      <details><summary>Quanto custa?</summary><div><p>Varia muito entre clínicas e cidades. Costuma haver um valor para a coleta e congelamento, e outro valor anual para manter guardado. Pergunte o preço total antes. Alguns hospitais públicos e universitários oferecem o serviço; pergunte à sua equipe.</p></div></details>
+      <details><summary>Quanto tempo o sêmen fica guardado?</summary><div><p>Enquanto for mantido no nitrogênio líquido. Há relatos de gravidez com amostras guardadas por mais de 20 anos. No Brasil, você assina um termo dizendo o que fazer com o material no futuro.</p></div></details>
+      <details><summary>E se eu nunca usar?</summary><div><p>A maioria dos homens que congela acaba não usando: em um grande estudo, cerca de 8 em cada 100 usaram o material<sup class="cite"><a href="#referencias" title="Ver referência 6">6</a></sup>. Isso acontece porque a fertilidade volta ou porque os planos mudam. Mesmo assim, muitos dizem que se sentiram mais tranquilos sabendo que a opção existia.</p></div></details>
+      <details><summary>Preciso falar com minha família ou parceira(o)?</summary><div><p>Não é obrigatório. Mas ter alguém de confiança junto ajuda a lembrar das informações e a dividir as decisões.</p></div></details>
+    </div>
+  </div>
+
+  <div class="next"><a href="#cancer">← Câncer e fertilidade</a><a href="#comparar">Etapa 3: compare as opções →</a></div>
+</section>
+
+<!-- ============ COMPARAR ============ -->
+<section class="view wide" id="view-comparar" aria-labelledby="h-comparar" hidden>
+  <div class="hero wrap" style="margin:0">
+    <p class="eyebrow">Comparar</p>
+    <h1 id="h-comparar">As opções lado a lado</h1>
+    <p class="lede">Veja na mesma tabela como cada opção funciona, suas vantagens e desvantagens. Ela ajuda a preparar a conversa com a sua equipe na próxima etapa.</p>
+  </div>
+
+  <div class="stack">
+        <p class="scroll-hint">Arraste a tabela para o lado para ver todas as colunas.</p>
+    <div class="table-scroll" role="region" aria-label="Tabela comparando as opções" tabindex="0">
+      <table>
+        <thead>
+          <tr><th scope="col"></th><th scope="col">Congelar sêmen</th><th scope="col">Retirar espermatozoides do testículo</th><th scope="col">Tecido testicular</th><th scope="col">Não preservar</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Para quem</th><td>Quase todos os homens após a puberdade</td><td>Quem não tem espermatozoides no sêmen ou não consegue coletar</td><td>Principalmente meninos antes da puberdade</td><td>Quem decide, com informação, não fazer agora</td></tr>
+          <tr><th scope="row">Como é</th><td>Masturbação em sala reservada</td><td>Pequena cirurgia com anestesia para captar espermatozoides</td><td>Pequena cirurgia com anestesia para retirar um pequeno pedaço do testículo</td><td>Nada é feito</td></tr>
+          <tr><th scope="row">Vantagens</th><td><ul><li>Simples, sem dor e sem cirurgia</li><li>Não atrasa o tratamento</li><li>Mesmo poucos espermatozoides podem ser usados com ICSI</li><li>Cerca de metade dos homens que usaram o material conseguiram ter filhos<sup class="cite"><a href="#referencias" title="Ver referência 6">6</a></sup></li></ul></td><td><ul><li>Pode encontrar espermatozoides quando não há no sêmen</li><li>Pode ser feita junto com a cirurgia do testículo, no câncer de testículo</li></ul></td><td><ul><li>Única possibilidade para quem ainda não produz espermatozoides</li></ul></td><td><ul><li>Nenhum procedimento e nenhum custo agora</li><li>A fertilidade pode voltar sozinha depois do tratamento</li></ul></td></tr>
+          <tr><th scope="row">Desvantagens</th><td><ul><li>Taxa anual para manter guardado</li><li>A amostra pode ter poucos espermatozoides, ou nenhum</li><li>Para usar, é preciso reprodução assistida, com procedimentos também na parceira</li><li>A maioria nunca usa: cerca de 8 em cada 100<sup class="cite"><a href="#referencias" title="Ver referência 6">6</a></sup></li><li>A coleta pode ser constrangedora</li></ul></td><td><ul><li>É uma cirurgia, com anestesia</li><li>Encontra espermatozoides em cerca de metade dos casos (45%, em um estudo com 31 pacientes)<sup class="cite"><a href="#referencias" title="Ver referência 9">9</a></sup></li><li>Custo maior</li></ul></td><td><ul><li>Experimental</li><li>Ainda não existe forma comprovada de usar esse tecido para ter filhos</li></ul></td><td><ul><li>Se a fertilidade não voltar, não haverá material guardado</li><li>Restariam tratamentos com resultado incerto, espermatozoides doados ou adoção</li></ul></td></tr>
+          <tr><th scope="row">Dor ou risco</th><td>Nenhum</td><td>Baixo (dor leve, inchaço, sangue acumulado no local)</td><td>Baixo (dor leve, inchaço, sangue acumulado no local)</td><td>Nenhum procedimento agora (veja as desvantagens)</td></tr>
+          <tr><th scope="row">Tempo necessário</th><td>1 a 3 dias</td><td>Alguns dias para agendar (menos de 7 dias)</td><td>Alguns dias para agendar (menos de 7 dias)</td><td>Nenhum agora, apenas iniciar o tratamento do câncer</td></tr>
+          <tr><th scope="row">Atrasa o tratamento?</th><td>Não</td><td>Pode atrasar pouco. Mas o tratamento para o câncer costuma necessitar de autorização primeiro, período em que ocorre a captação</td><td>Pode atrasar pouco. Mas o tratamento para o câncer costuma necessitar de autorização primeiro, período em que ocorre a captação</td><td>Não</td></tr>
+          <tr><th scope="row">Uso no futuro</th><td>Inseminação intrauterina ou fertilização in vitro</td><td>Fertilização in vitro (ICSI)</td><td>Ainda em pesquisa</td><td>Gravidez natural se a fertilidade voltar; senão, podem ser tentados tratamentos para tentar recuperar a produção de espermatozoides, utilizar espermatozoides doados, ou adoção</td></tr>
+          <tr><th scope="row">Força da evidência<sup class="cite"><a href="#referencias" title="Ver referências 1 e 4">1,4</a></sup></th><td><span class="pill ok">Bem estabelecida</span></td><td><span class="pill ok">Estabelecida</span></td><td><span class="pill warn">Experimental</span></td><td>—</td></tr>
+          <tr><th scope="row">Custos envolvidos</th><td>Coleta + taxa anual de armazenamento + exames de sangue</td><td>Cirurgia + taxa anual de armazenamento + exames de sangue</td><td>Em geral, previstos dentro dos centros que realizam pesquisa</td><td>Nenhum agora; pode haver custos no futuro, se precisar de reprodução assistida</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="note wrap" style="margin:0;max-width:46rem">A proteção dos testículos na radioterapia e os remédios para "proteger" os testículos não aparecem na tabela porque acontecem durante o tratamento, e não no lugar das outras opções.</p>
+
+  <div class="next wrap" style="margin:0;max-width:46rem"><a href="#opcoes">← Opções</a><a href="#decidir">Etapa 4: decida junto com sua equipe →</a></div>
+</section>
+
+<!-- ============ DECIDIR ============ -->
+<section class="view wide" id="view-decidir" aria-labelledby="h-decidir" hidden>
+  <div class="hero wrap" style="margin:0">
+    <p class="eyebrow">Decisão compartilhada</p>
+    <h1 id="h-decidir">Decida junto com sua equipe</h1>
+    <p class="lede">"Decisão compartilhada" quer dizer que o médico traz a informação técnica (científica) e você traz o que é importante para a sua vida. Os dois decidem juntos o que fazer.</p>
+    <p><strong>Não preservar também é uma decisão válida</strong>, desde que você tome essa decisão sabendo de todas as opções.</p>
+  </div>
+
+  <div class="aid wrap" style="margin:0;max-width:46rem">
+    <div class="stack">
+      <h2 style="font-size:var(--s2)">O que importa para você?</h2>
+      <p>Responda com calma. No fim, você recebe um QR Code com suas respostas para levar à consulta. Nada é enviado ou salvo: fica só na sua tela.</p>
+    </div>
+
+    <fieldset id="q1">
+      <legend>1. Ter filhos biológicos no futuro é importante para mim.</legend>
+      <div class="choices">
+        <input type="radio" name="q1" id="q1a" value="sim"><label for="q1a">Muito</label>
+        <input type="radio" name="q1" id="q1b" value="talvez"><label for="q1b">Ainda não sei</label>
+        <input type="radio" name="q1" id="q1c" value="nao"><label for="q1c">Pouco ou nada</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="q2">
+      <legend>2. Quando meu tratamento deve começar?</legend>
+      <div class="choices">
+        <input type="radio" name="q2" id="q2a" value="ja"><label for="q2a">Nos próximos dias</label>
+        <input type="radio" name="q2" id="q2b" value="semanas"><label for="q2b">Em 1 a 3 semanas</label>
+        <input type="radio" name="q2" id="q2c" value="naosei"><label for="q2c">Não sei</label>
+        <input type="radio" name="q2" id="q2d" value="comecou"><label for="q2d">Já comecei</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="q3">
+      <legend>3. Consigo coletar sêmen por masturbação?</legend>
+      <div class="choices">
+        <input type="radio" name="q3" id="q3a" value="sim"><label for="q3a">Sim</label>
+        <input type="radio" name="q3" id="q3b" value="duvida"><label for="q3b">Não tenho certeza</label>
+        <input type="radio" name="q3" id="q3c" value="nao"><label for="q3c">Não</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="q4">
+      <legend>4. O custo me preocupa.</legend>
+      <div class="choices">
+        <input type="radio" name="q4" id="q4a" value="muito"><label for="q4a">Muito</label>
+        <input type="radio" name="q4" id="q4b" value="pouco"><label for="q4b">Um pouco</label>
+        <input type="radio" name="q4" id="q4c" value="nao"><label for="q4c">Não</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="q5">
+      <legend>5. A ideia de passar por uma pequena cirurgia me incomoda.</legend>
+      <div class="choices">
+        <input type="radio" name="q5" id="q5a" value="muito"><label for="q5a">Muito</label>
+        <input type="radio" name="q5" id="q5b" value="pouco"><label for="q5b">Um pouco</label>
+        <input type="radio" name="q5" id="q5c" value="nao"><label for="q5c">Não</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="q6">
+      <legend>6. Pagar por algo que talvez eu nunca use me incomoda.</legend>
+      <div class="choices">
+        <input type="radio" name="q6" id="q6a" value="muito"><label for="q6a">Muito</label>
+        <input type="radio" name="q6" id="q6b" value="pouco"><label for="q6b">Um pouco</label>
+        <input type="radio" name="q6" id="q6c" value="nao"><label for="q6c">Não</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="q7">
+      <legend>7. Saber que tenho material guardado me deixaria mais tranquilo.</legend>
+      <div class="choices">
+        <input type="radio" name="q7" id="q7a" value="muito"><label for="q7a">Muito</label>
+        <input type="radio" name="q7" id="q7b" value="pouco"><label for="q7b">Um pouco</label>
+        <input type="radio" name="q7" id="q7c" value="nao"><label for="q7c">Pouco ou nada</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="q8">
+      <legend>8. Neste momento, estou inclinado a…</legend>
+      <div class="choices">
+        <input type="radio" name="q8" id="q8a" value="preservar"><label for="q8a">Preservar a fertilidade</label>
+        <input type="radio" name="q8" id="q8b" value="naopreservar"><label for="q8b">Não preservar</label>
+        <input type="radio" name="q8" id="q8c" value="naosei"><label for="q8c">Ainda não sei</label>
+      </div>
+    </fieldset>
+
+    <div class="stack">
+      <h3>Você se sente pronto para decidir?</h3>
+      <p class="note">Quatro perguntas rápidas do teste SURE, usado no mundo todo para saber se ainda há dúvidas sobre uma decisão.</p>
+    </div>
+
+    <fieldset id="s1">
+      <legend>Você tem certeza de qual é a melhor escolha para você?</legend>
+      <div class="choices">
+        <input type="radio" name="s1" id="s1a" value="sim"><label for="s1a">Sim</label>
+        <input type="radio" name="s1" id="s1b" value="nao"><label for="s1b">Não</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="s2">
+      <legend>Você conhece as vantagens e desvantagens de cada opção?</legend>
+      <div class="choices">
+        <input type="radio" name="s2" id="s2a" value="sim"><label for="s2a">Sim</label>
+        <input type="radio" name="s2" id="s2b" value="nao"><label for="s2b">Não</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="s3">
+      <legend>Você sabe quais vantagens e desvantagens são mais importantes para você?</legend>
+      <div class="choices">
+        <input type="radio" name="s3" id="s3a" value="sim"><label for="s3a">Sim</label>
+        <input type="radio" name="s3" id="s3b" value="nao"><label for="s3b">Não</label>
+      </div>
+    </fieldset>
+
+    <fieldset id="s4">
+      <legend>Você tem apoio e orientação suficientes para fazer sua escolha?</legend>
+      <div class="choices">
+        <input type="radio" name="s4" id="s4a" value="sim"><label for="s4a">Sim</label>
+        <input type="radio" name="s4" id="s4b" value="nao"><label for="s4b">Não</label>
+      </div>
+    </fieldset>
+
+    <div class="btn-row">
+      <button class="btn ghost" type="button" id="resetBtn">Limpar respostas</button>
+      <span id="copyStatus" role="status"></span>
+    </div>
+
+    <div class="share" aria-live="polite">
+      <div class="qr" id="qrBox"><p class="qr-empty">Responda ao menos uma pergunta para gerar o código.</p></div>
+      <div>
+        <h3>Levar ou compartilhar suas respostas</h3>
+        <p>Este código guarda suas respostas dentro do próprio link. Nada é salvo no site. Quem abrir o link vê suas perguntas e respostas, mas não consegue mudá-las.</p>
+        <p class="note">Aponte a câmera do celular para o código, ou copie o link e envie para quem você quiser. Quem tiver o link verá suas respostas.</p>
+        <div class="share-link" id="shareLink" hidden></div>
+        <div class="btn-row">
+          <button class="btn ghost" type="button" id="copyLinkBtn" disabled>Copiar link</button>
+          <span id="linkStatus" role="status"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stack wrap" style="margin:0;max-width:46rem">
+    <h2 style="font-size:var(--s2)">Perguntas que pode querer fazer à sua equipe</h2>
+    <ul class="ask">
+      <li>Qual é a chance de o meu tratamento afetar minha fertilidade?</li>
+      <li>Quantos dias eu tenho antes de começar?</li>
+      <li>Onde posso congelar sêmen perto de mim, e em quanto tempo me atendem?</li>
+      <li>Quanto custa a coleta e quanto custa por ano para manter guardado?</li>
+      <li>Depois do tratamento, quando devo fazer um espermograma?</li>
+      <li>Por quanto tempo devo usar camisinha durante e depois do tratamento?</li>
+    </ul>
+  </div>
+
+  <div class="next wrap" style="margin:0;max-width:46rem"><a href="#comparar">← Comparar</a><a href="#recursos">Etapa 5: como fazer na prática →</a></div>
+</section>
+
+<!-- ============ RESPOSTAS COMPARTILHADAS (somente leitura) ============ -->
+<section class="view wrap" id="view-respostas" aria-labelledby="h-respostas" hidden>
+  <div class="hero">
+    <p class="eyebrow">Respostas compartilhadas</p>
+    <h1 id="h-respostas">Perguntas e respostas para a consulta</h1>
+    <p class="lede">Estas respostas vieram de um link. Elas estão guardadas no próprio link e não podem ser alteradas por aqui. Nada fica salvo no site.</p>
+  </div>
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">Respostas</h2>
+    <dl class="answers" id="sharedAnswers"></dl>
+  </div>
+  <div class="summary">
+    <h3>Pontos para levar à consulta</h3>
+    <ul id="sharedPoints"></ul>
+  </div>
+  <div class="next"><a href="#inicio">Conhecer o site</a><a href="#decidir">Responder o meu próprio questionário →</a></div>
+</section>
+
+<!-- ============ RECURSOS ============ -->
+<section class="view wrap" id="view-recursos" aria-labelledby="h-recursos" hidden>
+  <div class="hero">
+    <p class="eyebrow">Recursos e custos</p>
+    <h1 id="h-recursos">Como fazer na prática</h1>
+    <p class="lede">O caminho até a consulta, o que costuma ser cobrado e onde buscar apoio.</p>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">O caminho, passo a passo</h2>
+    <ol class="steps">
+      <li><div><h3>Pergunte a sua equipe da oncologia</h3><p>"Meu tratamento pode afetar minha fertilidade? Tenho tempo de conversar com um especialista antes de começar?"</p></div></li>
+      <li><div><h3>Peça um encaminhamento</h3><p>Para um urologista/andrologista ou uma clínica de reprodução. Diga que é urgente por causa do câncer: muitos serviços atendem rapidamente com prioridade.</p></div></li>
+      <li><div><h3>Vá à consulta de fertilidade</h3><p>Leve seus exames e a data prevista para o início do tratamento. Se desejar, e for possível, leve alguém de confiança e a lista de perguntas que você montou na etapa Decidir.</p></div></li>
+      <li><div><h3>Se decidir preservar, faça a coleta</h3><p>Na maioria das vezes, em até 3 dias do encaminhamento.</p></div></li>
+      <li><div><h3>Siga com seu tratamento</h3><p>Com a decisão tomada, você foca no que importa agora: recuperar sua saúde integral.</p></div></li>
+    </ol>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">O que costuma ser cobrado</h2>
+    <p>Os valores mudam muito entre cidades e clínicas. Peça sempre o <strong>preço total por escrito</strong> antes de começar.</p>
+    <dl class="glossary">
+      <div><dt>Consulta</dt><dd>Avaliação com o urologista/andrologista ou na clínica de reprodução.</dd></div>
+      <div><dt>Espermograma</dt><dd>Exame do sêmen, muitas vezes feito na mesma coleta.</dd></div>
+      <div><dt>Congelamento</dt><dd>Preparo e congelamento das amostras. Pode ser cobrado por amostra.</dd></div>
+      <div><dt>Armazenamento</dt><dd>Taxa para manter o material guardado, geralmente cobrada todo ano.</dd></div>
+      <div><dt>Uso no futuro</dt><dd>Inseminação ou fertilização in vitro, se e quando você quiser usar.</dd></div>
+    </dl>
+    <div class="faq">
+      <details><summary>Existe atendimento pelo SUS?</summary><div><p>Alguns hospitais públicos e universitários oferecem congelamento de sêmen para pacientes com câncer. A oferta varia de cidade para cidade. Pergunte ao serviço social ou à equipe do hospital onde você trata.</p></div></details>
+      <details><summary>O plano de saúde cobre?</summary><div><p>A cobertura não é garantida para todos. Pergunte ao seu plano, de preferência por escrito, e peça orientação à sua equipe sobre o que fazer se a resposta for negativa.</p></div></details>
+    </div>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">Apoio emocional</h2>
+    <div class="res">
+      <a class="card" href="https://cvv.org.br" target="_blank" rel="noopener"><b>CVV — Ligue 188</b><span>Conversa gratuita e sigilosa, 24 horas, por telefone ou chat.</span><span class="url">cvv.org.br</span></a>
+      <div class="card" style="padding:1.1rem 1.2rem;border:1px solid var(--line);border-radius:14px;background:var(--surface);display:grid;gap:.3rem"><b style="font-family:var(--font-display);color:var(--accent)">Psicologia no seu hospital</b><span style="color:var(--muted);font-size:.95rem">A maioria dos centros de oncologia tem psicólogo na equipe. Peça para ser atendido, mesmo que ninguém ofereça.</span></div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">Informação confiável</h2>
+    <div class="res">
+      <a class="card" href="https://www.gov.br/inca" target="_blank" rel="noopener"><b>INCA</b><span>Instituto Nacional de Câncer: informações sobre tipos de câncer e tratamentos.</span><span class="url">gov.br/inca</span></a>
+      <a class="card" href="https://portaldaurologia.org.br" target="_blank" rel="noopener"><b>Sociedade Brasileira de Urologia</b><span>Conteúdo para pacientes sobre saúde masculina e fertilidade.</span><span class="url">portaldaurologia.org.br</span></a>
+      <a class="card" href="https://sbra.com.br" target="_blank" rel="noopener"><b>Sociedade Brasileira de Reprodução Assistida</b><span>Informação sobre reprodução assistida no Brasil.</span><span class="url">sbra.com.br</span></a>
+      <a class="card" href="https://sboc.org.br" target="_blank" rel="noopener"><b>Sociedade Brasileira de Oncologia Clínica</b><span>Conteúdo sobre tratamentos oncológicos.</span><span class="url">sboc.org.br</span></a>
+    </div>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">Palavras que você pode ouvir</h2>
+    <dl class="glossary">
+      <div><dt>Espermograma</dt><dd>Exame do sêmen que conta e avalia os espermatozoides.</dd></div>
+      <div><dt>Criopreservação</dt><dd>Congelar e guardar em nitrogênio líquido, a <span class="temp">−196 °C</span>.</dd></div>
+      <div><dt>Gonadotóxico</dt><dd>Tratamento que pode prejudicar os testículos.</dd></div>
+      <div><dt>Azoospermia</dt><dd>Quando não há espermatozoides no sêmen.</dd></div>
+      <div><dt>TESE / micro-TESE</dt><dd>Cirurgia para retirar espermatozoides direto do testículo.</dd></div>
+      <div><dt>FIV / ICSI</dt><dd>Fertilização in vitro. Na ICSI, um espermatozoide é colocado dentro do óvulo no laboratório.</dd></div>
+      <div><dt>Inseminação</dt><dd>Colocar o sêmen preparado dentro do útero da parceira.</dd></div>
+      <div><dt>Termo de consentimento</dt><dd>Documento em que você decide o que fazer com o material congelado no futuro.</dd></div>
+    </dl>
+  </div>
+
+  <div class="next"><a href="#decidir">← Decidir</a><a href="#referencias">Ver referências →</a></div>
+</section>
+
+<!-- ============ REFERÊNCIAS ============ -->
+<section class="view wrap" id="view-referencias" aria-labelledby="h-referencias" hidden>
+  <div class="hero">
+    <p class="eyebrow">Referências</p>
+    <h1 id="h-referencias">Sobre este material e de onde vêm as informações</h1>
+    <p class="lede">Quem fez este site, como ele foi feito, quando será atualizado e quais estudos foram usados.</p>
+  </div>
+
+  <div class="stack">
+    <h2 style="font-size:var(--s2)">Sobre este material</h2>
+    <div class="about">
+      <div><h3>Quem fez</h3><div><p>Conteúdo idealizado e sob curadoria do Dr. Bruno Hállan, urologista (CRM-CE 16919 · RQE Urologia 13791).</p><p><span class="todo">A preencher: outros autores e revisores.</span></p></div></div>
+      <div><h3>Como foi feito</h3><div><p>Esta é uma versão preliminar, baseada em diretrizes nacionais e internacionais listadas abaixo. O formato segue os critérios internacionais para ferramentas de apoio à decisão (IPDAS).</p><p>Foi construída em sua primeira versão pelo Dr. Bruno e avaliada, com sugestões de melhoria, por um paciente que realizou tratamento oncológico e que optou por preservar a fertilidade por meio do congelamento de sêmen.</p><p><span class="todo">A preencher: participação e testes de pacientes e especialistas.</span></p></div></div>
+      <div><h3>Financiamento</h3><div><p>Não houve financiamento externo. O desenvolvimento e a hospedagem do website foram custeados pelo Dr. Bruno como projeto de mestrado do Programa de Mestrado Profissional em Farmacologia da Universidade Federal do Ceará, Campus Fortaleza/CE.</p></div></div>
+      <div><h3>Conflitos de interesse</h3><div><p>O Dr. Bruno é urologista com foco de atuação em andrologia e atende especialmente pacientes nas áreas de medicina sexual e reprodução humana. Declara que pode ser beneficiado por meio de consultas médicas relacionadas ao tema. Declara que não possui remuneração ou ganho financeiro relacionado a nenhuma forma de congelamento de sêmen ou de tecido testicular.</p></div></div>
+      <div><h3>Data</h3><div><p>Versão preliminar de novembro de 2026.</p></div></div>
+      <div><h3>Atualização</h3><div><p>O conteúdo será revisado a cada 2 anos, ou antes se surgir uma nova diretriz importante. Próxima revisão prevista: novembro de 2028.</p></div></div>
+    </div>
+  </div>
+
+  <h2 style="font-size:var(--s2)">Referências</h2>
+
+  <ol class="refs">
+    <li>Su HI, Lacchetti C, Letourneau J, et al. Fertility preservation in people with cancer: ASCO guideline update. <span class="src"><i>J Clin Oncol.</i> 2025;43(12):1488-1515.</span></li>
+    <li>Minhas S, Bettocchi C, Boeri L, et al. European Association of Urology guidelines on male sexual and reproductive health: 2021 update on male infertility. <span class="src"><i>Eur Urol.</i> 2021;80(5):603-620.</span></li>
+    <li>Schlegel PN, Sigman M, Collura B, et al. Diagnosis and treatment of infertility in men: AUA/ASRM guideline parts I and II. <span class="src"><i>Fertil Steril.</i> 2021;115(1):54-61, 62-69.</span></li>
+    <li>Lambertini M, Peccatori FA, Demeestere I, et al. Fertility preservation and post-treatment pregnancies in post-pubertal cancer patients: ESMO Clinical Practice Guidelines. <span class="src"><i>Ann Oncol.</i> 2020;31(12):1664-1678.</span></li>
+    <li>Ethics Committee of the American Society for Reproductive Medicine. Fertility preservation and reproduction in patients facing gonadotoxic therapies: an Ethics Committee opinion. <span class="src"><i>Fertil Steril.</i> 2018;110(3):380-386.</span></li>
+    <li>Ferrari S, Paffoni A, Filippi F, et al. Sperm cryopreservation and reproductive outcome in male cancer patients: a systematic review. <span class="src"><i>Reprod Biomed Online.</i> 2016;33(1):29-38.</span></li>
+    <li>Anderson RA, Mitchell RT, Kelsey TW, et al. Cancer treatment and gonadal function: experimental and established strategies for fertility preservation in children and young adults. <span class="src"><i>Lancet Diabetes Endocrinol.</i> 2015;3(7):556-567.</span></li>
+    <li>Meistrich ML. Effects of chemotherapy and radiotherapy on spermatogenesis in humans. <span class="src"><i>Fertil Steril.</i> 2013;100(5):1180-1186.</span></li>
+    <li>Schrader M, Müller M, Sofikitis N, et al. "Onco-tese": testicular sperm extraction in azoospermic cancer patients before chemotherapy - new guidelines? <span class="src"><i>Urology.</i> 2003;61(2):421-425.</span></li>
+    <li>Conselho Federal de Medicina (Brasil). Resolução CFM nº 2.320/2022. Adota normas éticas para a utilização das técnicas de reprodução assistida. <span class="src"><i>Diário Oficial da União.</i> 2022.</span></li>
+    <li>Agência Nacional de Vigilância Sanitária (Brasil). Resolução RDC nº 771/2022. Dispõe sobre as Boas Práticas em Células Germinativas, Tecidos Germinativos e Embriões Humanos, para uso terapêutico, e dá outras providências. <span class="src"><i>Diário Oficial da União.</i> 2022.</span></li>
+  </ol>
+
+  <div class="callout"><p><strong>Importante:</strong> este site informa, mas não substitui a consulta. Cada caso é diferente. Converse com sua equipe de oncologia e com um especialista em reprodução antes de decidir.</p></div>
+
+  <div class="next"><a href="#recursos">← Recursos</a><a href="#inicio">Voltar ao início</a></div>
+</section>
+</main>
+
+<footer class="gutter">
+  <div class="wrap">
+    <p><strong>Curadoria: Dr. Bruno Hállan, urologista · CRM-CE 16919 · RQE Urologia 13791</strong></p>
+    <p>Material educativo, não substitui a consulta médica · Versão de novembro de 2026 · <a href="#referencias">Sobre este material e referências</a></p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+(function(){
+  var routes=["inicio","cancer","opcoes","comparar","decidir","recursos","referencias"];
+  // Link público do site: o QR Code aponta para este endereço + as respostas codificadas.
+  var SITE_URL="https://brunomeneses22.github.io/Preservar-Fertilidade-Masculina/guia/";
+  var SHARED_RE=/^respostas-[0-4]{12}$/;
+  function show(){
+    var r=(location.hash||"").replace("#","");
+    if(SHARED_RE.test(r)){showShared(r);return;}
+    document.getElementById("view-respostas").hidden=true;
+    if(routes.indexOf(r)<0) r="inicio";
+    var steps=5, idx=routes.indexOf(r);
+    function stepOf(route){var i=routes.indexOf(route);return (i>=1&&i<=steps)?i:-1}
+    var cur=stepOf(r);
+    var bar=document.getElementById("progBar");
+    if(bar) bar.style.width=(cur>0?cur/steps*100:0)+"%";
+    routes.forEach(function(id){
+      document.getElementById("view-"+id).hidden=(id!==r);
+    });
+    document.querySelectorAll("nav.tabs a").forEach(function(a){
+      var st=stepOf(a.dataset.route);a.classList.toggle("done",st>0&&cur>0&&st<cur);
+      if(a.dataset.route===r){a.setAttribute("aria-current","page");try{a.scrollIntoView({block:"nearest",inline:"nearest"})}catch(e){}}
+      else a.removeAttribute("aria-current");
+    });
+    window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange",show);
+  show();
+
+  // Decision aid
+  var pointsEl=document.getElementById("points");
+  function fieldsets(){return Array.prototype.slice.call(document.querySelectorAll('.aid fieldset'))}
+  function radiosOf(fs){return Array.prototype.slice.call(fs.querySelectorAll('input[type="radio"]'))}
+  function val(n){var el=document.querySelector('input[name="'+n+'"]:checked');return el?el.value:null}
+  function pointsFrom(get){
+    var p=[], q1=get("q1"), q2=get("q2"), q3=get("q3"), q4=get("q4"), q5=get("q5"), q6=get("q6"), q7=get("q7"), q8=get("q8");
+    var sure=["s1","s2","s3","s4"].map(get);
+    if(q1==="sim") p.push("Ter filhos biológicos é muito importante para mim.");
+    if(q1==="talvez") p.push("Ainda não sei se quero ter filhos. Quero entender as vantagens e desvantagens de cada opção.");
+    if(q1==="nao") p.push("Ter filhos biológicos não é prioridade para mim agora. Quero confirmar que estou decidindo com toda a informação.");
+    if(q2==="ja") p.push("Meu tratamento começa em poucos dias. Dá para coletar pelo menos uma amostra antes? Onde me atendem mais rápido?");
+    if(q2==="semanas") p.push("Tenho algumas semanas. Quantas coletas são recomendadas no meu caso?");
+    if(q2==="naosei") p.push("Preciso saber a data de início do tratamento para planejar a coleta.");
+    if(q2==="comecou") p.push("Já comecei o tratamento. Ainda faz sentido coletar? Devo esperar e fazer um espermograma depois?");
+    if(q3==="duvida"||q3==="nao") p.push("Posso ter dificuldade para coletar por masturbação. Quais alternativas existem (estímulo com vibração, eletroejaculação, retirada do testículo)?");
+    if(q3==="sim") p.push("Consigo coletar por masturbação. Preciso de alguma preparação antes?");
+    if(q4==="muito"||q4==="pouco") p.push("O custo me preocupa. Quanto custa a coleta e a taxa anual? Existe serviço público ou universitário perto de mim?");
+    if(q5==="muito"||q5==="pouco") p.push("A ideia de uma cirurgia me incomoda. Se eu precisar, quais são os riscos e as chances reais da retirada de espermatozoides do testículo?");
+    if(q6==="muito"||q6==="pouco") p.push("Pagar por algo que talvez eu não use me incomoda. Por quanto tempo preciso pagar o armazenamento e posso descartar depois?");
+    if(q7==="muito") p.push("Ter material guardado me deixaria mais tranquilo.");
+    if(q7==="nao") p.push("Ter material guardado não faz muita diferença para a minha tranquilidade.");
+    if(q8==="preservar") p.push("Neste momento, estou inclinado a preservar a fertilidade.");
+    if(q8==="naopreservar") p.push("Neste momento, estou inclinado a não preservar a fertilidade.");
+    if(q8==="naosei") p.push("Ainda não sei o que escolher.");
+    var sureLabels=["não tenho certeza da melhor escolha","não conheço bem as vantagens e desvantagens","não sei o que é mais importante para mim","não tenho apoio suficiente"];
+    if(sure.every(function(v){return v})){
+      var gaps=sureLabels.filter(function(_,i){return sure[i]==="nao"});
+      if(gaps.length) p.push("Teste SURE: ainda tenho dúvidas ("+gaps.join("; ")+"). Quero conversar mais antes de decidir.");
+      else p.push("Teste SURE: me sinto pronto para decidir.");
+    }
+    return p;
+  }
+  function fillList(ul,p){
+    ul.innerHTML="";
+    p.forEach(function(t){var li=document.createElement("li");li.textContent=t;ul.appendChild(li)});
+  }
+
+  // Codifica as respostas em um código de 12 dígitos (0 = sem resposta; 1..n = opção escolhida).
+  function encode(){
+    var code=fieldsets().map(function(fs){
+      var rs=radiosOf(fs), i=rs.findIndex(function(r){return r.checked});
+      return String(i+1);
+    }).join("");
+    return /[1-9]/.test(code)?"respostas-"+code:null;
+  }
+  function decode(hash){
+    var digits=hash.replace("respostas-","").split("").map(Number), map={};
+    fieldsets().forEach(function(fs,k){
+      var rs=radiosOf(fs), d=digits[k]||0;
+      if(d>0&&rs[d-1]) map[rs[0].name]={value:rs[d-1].value,label:document.querySelector('label[for="'+rs[d-1].id+'"]').textContent};
+    });
+    return map;
+  }
+
+  var qrBox=document.getElementById("qrBox"), shareLink=document.getElementById("shareLink"), copyLinkBtn=document.getElementById("copyLinkBtn");
+  function updateShare(){
+    var h=encode();
+    document.getElementById("linkStatus").textContent="";
+    if(!h){
+      qrBox.innerHTML='<p class="qr-empty">Responda ao menos uma pergunta para gerar o código.</p>';
+      shareLink.hidden=true; shareLink.textContent=""; copyLinkBtn.disabled=true; return;
+    }
+    var url=SITE_URL+"#"+h;
+    shareLink.textContent=url; shareLink.hidden=false; copyLinkBtn.disabled=false;
+    if(typeof qrcode==="function"){
+      try{var qr=qrcode(0,"M");qr.addData(url);qr.make();qrBox.innerHTML=qr.createSvgTag({cellSize:4,margin:2,scalable:true,alt:"QR Code com suas respostas"});}
+      catch(e){qrBox.innerHTML='<p class="qr-empty">Não foi possível desenhar o código. Use o link abaixo.</p>';}
+    } else qrBox.innerHTML='<p class="qr-empty">O código não carregou. Use o link abaixo.</p>';
+  }
+
+  function build(){
+    var p=pointsFrom(val);
+    updateShare();
+    return p;
+  }
+
+  function showShared(hash){
+    routes.forEach(function(id){document.getElementById("view-"+id).hidden=true});
+    document.getElementById("view-respostas").hidden=false;
+    var bar=document.getElementById("progBar"); if(bar) bar.style.width="0%";
+    document.querySelectorAll("nav.tabs a").forEach(function(a){a.removeAttribute("aria-current");a.classList.remove("done")});
+    var map=decode(hash), dl=document.getElementById("sharedAnswers"); dl.innerHTML="";
+    fieldsets().forEach(function(fs){
+      var name=radiosOf(fs)[0].name, row=document.createElement("div"),
+          dt=document.createElement("dt"), dd=document.createElement("dd");
+      dt.textContent=fs.querySelector("legend").textContent;
+      if(map[name]) dd.textContent=map[name].label; else {dd.textContent="Sem resposta";dd.className="none";}
+      row.appendChild(dt);row.appendChild(dd);dl.appendChild(row);
+    });
+    var p=pointsFrom(function(n){return map[n]?map[n].value:null});
+    fillList(document.getElementById("sharedPoints"),p.length?p:["Nenhum ponto foi gerado com estas respostas."]);
+    window.scrollTo(0,0);
+  }
+  if(SHARED_RE.test((location.hash||"").replace("#",""))) showShared(location.hash.replace("#",""));
+
+  function copyText(text,statusEl,selectEl,okMsg){
+    function fallback(){
+      var r=document.createRange();r.selectNodeContents(selectEl);
+      var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);
+      statusEl.textContent="Texto selecionado. Use Copiar no seu aparelho.";
+    }
+    try{navigator.clipboard.writeText(text).then(function(){statusEl.textContent=okMsg},fallback);}catch(e){fallback()}
+  }
+
+  document.querySelectorAll('.aid input[type="radio"]').forEach(function(i){i.addEventListener("change",build)});
+  document.getElementById("resetBtn").addEventListener("click",function(){
+    document.querySelectorAll('.aid input[type="radio"]').forEach(function(i){i.checked=false});
+    build(); document.getElementById("copyStatus").textContent="Respostas apagadas.";
+  });
+  copyLinkBtn.addEventListener("click",function(){
+    if(shareLink.hidden) return;
+    copyText(shareLink.textContent,document.getElementById("linkStatus"),shareLink,"Link copiado.");
+  });
+  build();
+})();
+</script>
+
+</body>
+</html>

@@ -61,3 +61,12 @@ Os custos de coleta e de armazenamento ainda aparecem como "a definir" no passo 
 ## Autoria
 
 Dr. Bruno Hállan, urologista e andrologista, Fortaleza, CE (CRM-CE 16919, RQE 13791).
+
+## Guia para o paciente (pasta `guia/`)
+
+A pasta [`guia/`](guia/) tem um segundo projeto, separado do app acima: o **Guia para entender sobre fertilidade antes do tratamento do câncer**. É um site educativo de página única, em linguagem simples, com 5 etapas (Câncer e fertilidade, Opções, Comparar, Decidir e Recursos), além de Início e Referências.
+
+- Endereço: https://brunomeneses22.github.io/Preservar-Fertilidade-Masculina/guia/
+- Também é *stateless*: o questionário da etapa Decidir gera um QR code e um link `#respostas-XXXXXXXXXXXX` (12 dígitos, um por pergunta; 0 = sem resposta). Quem abre o link vê as respostas numa tela somente leitura.
+- O endereço usado no QR code fica na constante `SITE_URL`, no `guia/index.html`.
+- Mexer no `guia/` não afeta o app da raiz nem as regras de versão do questionário do `CLAUDE.md`.
