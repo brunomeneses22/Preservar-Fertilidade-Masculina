@@ -2883,15 +2883,16 @@ function telaPDA(code){
     <p class="lead">Não existe resposta certa para todos. Este guia mostra as duas opções da mesma forma, para você decidir com a sua equipe o que faz sentido para a sua vida.</p>
     ${r ? `<p class="small">Sua equipe de saúde já preencheu a triagem. Responda os passos abaixo; no final, você decide se envia suas respostas ao serviço.</p>` : ""}
   </div>
-  <nav class="toc" aria-label="Passos do guia">
-    ${["Por que agora","As opções","Os números","O que pesa para você","Você está pronto?","Próximos passos"].map((t,i) => `<button type="button" data-go="p${i+1}">${i+1}. ${t}</button>`).join("")}
-  </nav>
 
   ${sec("p1",1,"Por que falar disso agora", `
     <p>Alguns tratamentos de câncer podem diminuir ou parar a produção de espermatozoides. Às vezes o efeito passa em meses ou anos; às vezes é permanente. É difícil saber de antemão o que vai acontecer com cada pessoa.</p>
     <p>O risco depende principalmente do tipo de tratamento. É maior com alguns quimioterápicos (os chamados alquilantes), radioterapia perto dos testículos e transplante de medula.</p>
     <p>Congelar sêmen só é possível com segurança <b>antes</b> do tratamento começar. Por isso o assunto aparece agora, num momento que já é difícil.</p>
     <div class="callout"><h3>Para quem é este guia</h3><p>Homens e adolescentes que já passaram pela puberdade, com câncer e um tratamento que pode afetar a fertilidade. Se você tem menos de 18 anos, use o guia junto com seus responsáveis. Ele não serve para meninos antes da puberdade.</p></div>`)}
+
+  <nav class="toc" aria-label="Passos do guia">
+    ${["Por que agora","As opções","Os números","O que pesa para você","Você está pronto?","Próximos passos"].map((t,i) => `<button type="button" data-go="p${i+1}">${i+1}. ${t}</button>`).join("")}
+  </nav>
 
   ${sec("p2",2,"As duas opções, lado a lado", `
     <p>As duas opções são escolhas razoáveis. Leia as duas colunas inteiras.</p>
